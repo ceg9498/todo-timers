@@ -7,14 +7,13 @@ interface ITimer {
     required: boolean,
     completed: Date[],
     handleChange: any,
+    isDone: boolean,
 }
 
 export default class Timer extends Component<ITimer,any> {
     constructor(props:ITimer){
         super(props);
-        this.state = {
-            isDone: this.isChecked(),
-        };
+        this.state = {};
     }
     componentDidMount(){
         
@@ -26,36 +25,6 @@ export default class Timer extends Component<ITimer,any> {
         this.setState({
             isDone: target.checked,
         });
-    }
-
-    isChecked(){
-        // check if the array is empty
-        if(!this.props.completed){
-            return false;
-        }
-        // check if last date on list is greater than the last reset for the period
-        if(this.props.completed[this.props.completed.length-1] > this.getReset()){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    getReset(){
-        let reset = new Date();
-        if(this.props.frequency === "day"){
-            reset.setUTCHours(15);
-        } else if(this.props.frequency === "week"){
-            // Tuesday @ 8am UTC
-            // Need to figure out how to change the date itself
-        } else {
-            // Based on the text in this.props.frequency
-            // Need to figure out how I want to store the data
-        }
-        reset.setUTCMinutes(0);
-        reset.setUTCSeconds(0);
-        reset.setUTCMilliseconds(0);
-        return reset;
     }
 
     displayDate(){
@@ -138,8 +107,8 @@ export default class Timer extends Component<ITimer,any> {
         <label>
             <input 
                 type="checkbox" 
-                name={"isDone"} 
-                checked={this.state.isDone} 
+                name="isDone" 
+                checked={this.props.isDone} 
                 onChange={this.handleChange} />
             {this.props.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>

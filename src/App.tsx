@@ -39,6 +39,7 @@ export default class TimerList extends Component<any,any> {
 
     let tempData = this.state.data;
     tempData[index].completed = dates;
+    tempData[index].isDone = target.checked;
 
     this.setState({
         data: tempData,
@@ -63,7 +64,8 @@ render() {
         frequency={item.frequency}
         required={item.required} 
         completed={item.completed}
-        handleChange={this.handleChange} />
+        handleChange={this.handleChange}
+        isDone={item.isDone} />
      );
    }})}
   
@@ -80,7 +82,8 @@ render() {
         frequency={item.frequency}
         required={item.required} 
         completed={item.completed}
-        handleChange={this.handleChange} />
+        handleChange={this.handleChange}
+        isDone={item.isDone} />
       );
    }})}
   
@@ -97,7 +100,8 @@ render() {
         frequency={item.frequency}
         required={item.required} 
         completed={item.completed}
-        handleChange={this.handleChange} />
+        handleChange={this.handleChange}
+        isDone={item.isDone} />
       );
    }})}
   
@@ -114,7 +118,8 @@ render() {
         frequency={item.frequency}
         required={item.required} 
         completed={item.completed}
-        handleChange={this.handleChange} />
+        handleChange={this.handleChange}
+        isDone={item.isDone} />
       );
    }})}
   
