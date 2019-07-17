@@ -1,63 +1,71 @@
 import React, { Component } from 'react'
 
 interface ITimer {
+    index: number,
     name: string,
     frequency: string,
     required: boolean,
     completed: Date[],
-}
-interface ITimerS {
-    name: string,
-    frequency: string,
-    required: boolean,
-    completed: Date[],
-    isChecked: boolean,
+    handleChange: any,
 }
 
-export default class Timer extends Component<ITimer,ITimerS> {
+export default class Timer extends Component<ITimer,any> {
     constructor(props:ITimer){
         super(props);
         this.state = {
-            name: props.name,
-            frequency: props.frequency,
-            required: props.required,
-            completed: props.completed,
-            isChecked: false,
+            isDone: this.isChecked(),
         };
     }
-    componentDidMount(){}
+    componentDidMount(){
+        
+    }
 
     handleChange = (e:React.FormEvent<EventTarget>) => {
         let target = e.target as HTMLInputElement;
-        let dates = [];
-
-        // if dates exist in the completion list, set them to the temporary array
-        if(this.state.completed){
-            this.state.completed.forEach(date => {
-                dates.push(date);
-            });
-        }
-        // if the box is being checked, add the current date onto the end of the array
-        if(target.checked === true){
-            dates.push(new Date());
-        } else {
-        // if the box is being unchecked, remove the last date from the end of the array
-            dates.pop();
-        }
+        this.props.handleChange(e,this.props.index);
         this.setState({
-            isChecked: target.checked,
-            completed: dates,
+            isDone: target.checked,
         });
     }
 
+    isChecked(){
+        // check if the array is empty
+        if(!this.props.completed){
+            return false;
+        }
+        // check if last date on list is greater than the last reset for the period
+        if(this.props.completed[this.props.completed.length-1] > this.getReset()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    getReset(){
+        let reset = new Date();
+        if(this.props.frequency === "day"){
+            reset.setUTCHours(15);
+        } else if(this.props.frequency === "week"){
+            // Tuesday @ 8am UTC
+            // Need to figure out how to change the date itself
+        } else {
+            // Based on the text in this.props.frequency
+            // Need to figure out how I want to store the data
+        }
+        reset.setUTCMinutes(0);
+        reset.setUTCSeconds(0);
+        reset.setUTCMilliseconds(0);
+        return reset;
+    }
+
     displayDate(){
-        let index = this.state.completed.length-1;
-        let date = this.state.completed[index].getDate();
+        let index = this.props.completed.length-1;
+        let date = this.props.completed[index].getDate();
         let day = "";
         let month = "";
-        let year = this.state.completed[index].getFullYear();
+        let year = this.props.completed[index].getFullYear();
 
-        switch (this.state.completed[index].getDay()){
+        switch (this.props.completed[index].getDay()){
             case 0:
                 day = "Sun,";
                 break;
@@ -80,7 +88,7 @@ export default class Timer extends Component<ITimer,ITimerS> {
                 day = "Sat,";
                 break;
         }
-        switch (this.state.completed[index].getMonth()){
+        switch (this.props.completed[index].getMonth()){
             case 0:
                 month = "January";
                 break;
@@ -124,20 +132,21 @@ export default class Timer extends Component<ITimer,ITimerS> {
     }
     
     render(){
+        
      return(
       <div className="timerTile">
         <label>
             <input 
                 type="checkbox" 
-                name={"isChecked"} 
-                checked={this.state.isChecked} 
+                name={"isDone"} 
+                checked={this.state.isDone} 
                 onChange={this.handleChange} />
-            {this.state.required && 
+            {this.props.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>
             }
-            {this.props.name}
+            <span>{this.props.name}</span>
         </label><br/>
-        {this.state.completed && this.state.completed.length > 0 && 
+        {this.props.completed && this.props.completed.length > 0 && 
             this.displayDate()
         }
       </div>
