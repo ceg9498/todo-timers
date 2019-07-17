@@ -1,0 +1,121 @@
+body {
+  --ltblue: hsl(209, 100%, 85%);
+  --dkgrey: hsl(206, 9%, 15%);
+  --ltgrey: hsl(210, 8%, 95%);
+  background-color: var(--dkgrey);
+  color: var(--ltblue);
+  font-family: sans-serif;
+  font-size: 14px;
+  margin: 0px;
+ }
+ * {
+  box-sizing: border-box;
+ }
+ /* article is the main content on the page (contains sub-sections) */
+ article {
+  background-color: var(--dkgrey);
+  background-image: repeating-linear-gradient(hsla(204, 2%, 43%, .1),	hsla(204, 2%, 43%,.1) 1px, transparent 1px, transparent 4px);
+ }
+ 
+ #navbar {
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  padding: 0 20px;
+  width: 100vw;
+  
+  background-color: hsla(206, 9%, 15%, .8);
+  border-bottom: 2px solid var(--ltblue);
+  
+  ul {
+   list-style: none;
+   display: flex;
+   
+   padding: 0px;
+   margin: 0px;
+   border-left: 2px solid var(--ltblue);
+  }
+  li {
+   display: inline-block;
+   margin: 0px;
+   padding: 0px;
+  }
+  a {
+   display: inline-block;
+   text-decoration: none;
+   background: var(--dkgrey);
+   color: var(--ltblue);
+   padding: 10px 20px;
+   border-right: 2px solid var(--ltblue);
+  }
+  a:hover, a:focus {
+   background-color: var(--ltblue);
+   color: var(--dkgrey);
+   box-shadow: inset 1px 1px 5px var(--dkgrey);
+  }
+ }
+ 
+ #a-top {
+  font-weight: bold;
+ }
+ 
+ section {
+  height: 100vh;
+  width: 99%;
+  border: 1px solid white;
+  margin: 0px auto;
+  padding: 30px 10px 10px 10px;
+ }
+
+ .timerTile {
+   width: 300px;
+   padding: 20px;
+   margin: 5px;
+   border: 1px solid var(--ltblue);
+   font-size: 18px;
+   border-radius: 4px;
+ }
+ .reqSym {
+   color: red;
+   padding: 0px 5px;
+ }
+ .date {
+   font-size: 12px;
+   padding-left: 30px;
+ }
+ 
+ // Adjust Navbar 
+ @media only screen and (max-width: 500px){
+  #navbar {
+   border-bottom: 1px solid var(--ltblue);
+   width: 100vh;
+   height: 40px;
+   right: 100vw;
+   transform: rotate(-90deg);
+   transform-origin: 100% 0;
+  
+   ul {
+    width: 100%;
+    flex-flow: row-reverse nowrap;
+    justify-items: flex-end;
+    border-left: none;
+   }
+   a {
+    position: relative;
+    top: 7px;
+    border-bottom: 2px solid var(--ltblue);
+    border-left: 2px solid var(--ltblue);
+    border-right: none;
+   }
+   a:first-child {
+    border-right: 2px solid var(--ltblue);
+   }
+   a:hover, a:focus {
+    top: 13px;
+   }
+  }
+  section {
+   padding-top: 10px;
+   padding-left: 40px;
+  }
+ }
