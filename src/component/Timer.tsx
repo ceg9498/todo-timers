@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 interface ITimer {
+    id: any,
     name: string,
     frequency: string,
     required: boolean,
@@ -25,31 +26,32 @@ export default class Timer extends Component<ITimer,ITimerS> {
             isChecked: false,
         };
     }
-    componentDidMount(){
-        
-    }
+    componentDidMount(){}
 
     handleChange = (e:React.FormEvent<EventTarget>) => {
+        console.log("handleChange")
         let target = e.target as HTMLInputElement;
+        this.setState({
+            isChecked: target.checked,
+        })
         if(target.checked){
+            console.log("Checked!")
             this.setState({
                 completed: new Date(),
-                isChecked: true,
             })
         } else {
-            this.setState({
-                isChecked: false,
-            })
+            console.log("Unchecked!")
         }
+        e.preventDefault();
     }
 
     displayDate(){
-        let date = this.props.completed.getDate();
+        let date = this.state.completed.getDate();
         let day = "";
         let month = "";
-        let year = this.props.completed.getFullYear();
+        let year = this.state.completed.getFullYear();
 
-        switch (this.props.completed.getDay()){
+        switch (this.state.completed.getDay()){
             case 0:
                 day = "Sunday";
                 break;
@@ -72,7 +74,7 @@ export default class Timer extends Component<ITimer,ITimerS> {
                 day = "Saturday";
                 break;
         }
-        switch (this.props.completed.getMonth()){
+        switch (this.state.completed.getMonth()){
             case 0:
                 month = "January";
                 break;
@@ -111,17 +113,18 @@ export default class Timer extends Component<ITimer,ITimerS> {
                 break;
         }
         return(
-            <span className="date">{day} {month} {date}, {year}</span>
+            <span className="date">Last completed on: {day} {month} {date}, {year}</span>
         );
     }
     
     render(){
+        console.log(new Date())
      return(
-      <div className="timerTile">
+      <div className="timerTile" id={this.props.id}>
         <label>
             <input 
                 type="checkbox" 
-                name={`${this.props.name}-box`} 
+                name={"isChecked"} 
                 checked={this.state.isChecked} 
                 onChange={this.handleChange} />
             {this.state.required && 
@@ -129,7 +132,9 @@ export default class Timer extends Component<ITimer,ITimerS> {
             }
             {this.props.name}
         </label><br/>
-        {this.displayDate()}
+        {this.state.completed && 
+            this.displayDate()
+        }
       </div>
      );
     }

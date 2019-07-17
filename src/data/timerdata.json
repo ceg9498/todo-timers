@@ -1,0 +1,21 @@
+[{
+    "name": "Alliance Roulette",
+    "frequency": "day",
+    "required": false,
+    "completed": null
+},{
+    "name": "Expert Roulette",
+    "frequency": "day",
+    "required": true,
+    "completed": null
+},{
+    "name": "Beast Tribe: Vath",
+    "frequency": "day",
+    "required": true,
+    "completed": null
+},{
+    "name": "Beast Tribe: Vanu Vanu",
+    "frequency": "day",
+    "required": true,
+    "completed": null
+}]
