@@ -29,7 +29,7 @@ render() {
    <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
    {this.data.map((item,index) => 
      <Timer
-        id={index}
+        key={index}
         name={item.name}
         frequency={item.frequency}
         required={item.required} 

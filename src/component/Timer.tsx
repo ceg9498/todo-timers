@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
 
 interface ITimer {
-    id: any,
     name: string,
     frequency: string,
     required: boolean,
-    completed: Date,
+    completed: Date[],
 }
 interface ITimerS {
     name: string,
     frequency: string,
     required: boolean,
-    completed: Date,
+    completed: Date[],
     isChecked: boolean,
 }
 
@@ -29,52 +28,59 @@ export default class Timer extends Component<ITimer,ITimerS> {
     componentDidMount(){}
 
     handleChange = (e:React.FormEvent<EventTarget>) => {
-        console.log("handleChange")
         let target = e.target as HTMLInputElement;
+        let dates = [];
+
+        // if dates exist in the completion list, set them to the temporary array
+        if(this.state.completed){
+            this.state.completed.forEach(date => {
+                dates.push(date);
+            });
+        }
+        // if the box is being checked, add the current date onto the end of the array
+        if(target.checked === true){
+            dates.push(new Date());
+        } else {
+        // if the box is being unchecked, remove the last date from the end of the array
+            dates.pop();
+        }
         this.setState({
             isChecked: target.checked,
-        })
-        if(target.checked){
-            console.log("Checked!")
-            this.setState({
-                completed: new Date(),
-            })
-        } else {
-            console.log("Unchecked!")
-        }
-        e.preventDefault();
+            completed: dates,
+        });
     }
 
     displayDate(){
-        let date = this.state.completed.getDate();
+        let index = this.state.completed.length-1;
+        let date = this.state.completed[index].getDate();
         let day = "";
         let month = "";
-        let year = this.state.completed.getFullYear();
+        let year = this.state.completed[index].getFullYear();
 
-        switch (this.state.completed.getDay()){
+        switch (this.state.completed[index].getDay()){
             case 0:
-                day = "Sunday";
+                day = "Sun,";
                 break;
             case 1:
-                day = "Monday";
+                day = "Mon,";
                 break;
             case 2:
-                day = "Tuesday";
+                day = "Tues,";
                 break;
             case 3:
-                day = "Wednesday";
+                day = "Wed,";
                 break;
             case 4:
-                day = "Thursday";
+                day = "Thurs,";
                 break;
             case 5:
-                day = "Friday";
+                day = "Fri,";
                 break;
             case 6:
-                day = "Saturday";
+                day = "Sat,";
                 break;
         }
-        switch (this.state.completed.getMonth()){
+        switch (this.state.completed[index].getMonth()){
             case 0:
                 month = "January";
                 break;
@@ -118,9 +124,8 @@ export default class Timer extends Component<ITimer,ITimerS> {
     }
     
     render(){
-        console.log(new Date())
      return(
-      <div className="timerTile" id={this.props.id}>
+      <div className="timerTile">
         <label>
             <input 
                 type="checkbox" 
@@ -132,7 +137,7 @@ export default class Timer extends Component<ITimer,ITimerS> {
             }
             {this.props.name}
         </label><br/>
-        {this.state.completed && 
+        {this.state.completed && this.state.completed.length > 0 && 
             this.displayDate()
         }
       </div>
