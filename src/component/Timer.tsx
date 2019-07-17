@@ -15,17 +15,6 @@ export default class Timer extends Component<ITimer,any> {
         super(props);
         this.state = {};
     }
-    componentDidMount(){
-        
-    }
-
-    handleChange = (e:React.FormEvent<EventTarget>) => {
-        let target = e.target as HTMLInputElement;
-        this.props.handleChange(e,this.props.index);
-        this.setState({
-            isDone: target.checked,
-        });
-    }
 
     displayDate(){
         let index = this.props.completed.length-1;
@@ -109,7 +98,7 @@ export default class Timer extends Component<ITimer,any> {
                 type="checkbox" 
                 name="isDone" 
                 checked={this.props.isDone} 
-                onChange={this.handleChange} />
+                onChange={e => (this.props.handleChange(e, this.props.index))} />
             {this.props.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>
             }
