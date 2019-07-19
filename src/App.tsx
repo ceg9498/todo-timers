@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
-import Navbar from './component/Navbar'
+import Navbar from './component/Navbar';
 //import Popup from './component/Popup';
 import Timer from './component/Timer';
 import './App.scss';
-let fs = require('fs');
 
 function loadData(){
   let timerData = require('./data/timerdata.json');
   return timerData;
-}
-
-function saveData(toSave){
-  toSave = JSON.stringify(toSave);
-  fs.writeFile('./data/timerdata.json', toSave, e => {
-    if(e){
-      console.log(e);
-    }
-  });
 }
 
 export default class TimerList extends Component<any,any> {
