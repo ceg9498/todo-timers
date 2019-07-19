@@ -1,13 +1,61 @@
 [{
-    "name": "Alliance Roulette",
+    "name": "Expert Roulette",
+    "frequency": "day",
+    "required": true,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "50/60/70 Roulette",
+    "frequency": "day",
+    "required": true,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Leveling Roulette",
+    "frequency": "day",
+    "required": true,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Trial Roulette",
+    "frequency": "day",
+    "required": true,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Main Story Roulette",
     "frequency": "day",
     "required": false,
     "completed": null,
     "isDone": false
 },{
-    "name": "Expert Roulette",
+    "name": "Guildhest Roulette",
+    "frequency": "day",
+    "required": false,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Alliance Raid Roulette",
+    "frequency": "day",
+    "required": false,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Normal Raid Roulette",
     "frequency": "day",
     "required": true,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Mentor Roulette",
+    "frequency": "day",
+    "required": false,
+    "completed": null,
+    "isDone": false
+},{
+    "name": "Frontlines",
+    "frequency": "day",
+    "required": false,
     "completed": null,
     "isDone": false
 },{
