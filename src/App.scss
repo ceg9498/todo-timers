@@ -60,10 +60,14 @@ body {
  }
  
  section {
-  height: 100vh;
+  min-height: 100vh;
   width: 99%;
   margin: 0px auto;
   padding: 30px 10px 10px 10px;
+ }
+ .flex {
+   display: flex;
+   flex-wrap: wrap;
  }
 
  .timerTile {

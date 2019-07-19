@@ -29,7 +29,8 @@ export default class TimerList extends Component<any,any> {
     }
     // if the box is being checked, add the current date onto the end of the array
     if(target.checked === true){
-        dates.push(new Date());
+      let date = new Date()
+      dates.push(date);
     } else {
     // if the box is being unchecked, remove the last date from the end of the array
         dates.pop();
@@ -45,6 +46,7 @@ export default class TimerList extends Component<any,any> {
   }
   
 render() {
+  console.log(this.state.data);
  return (
   <article id="root">
   <Navbar />
@@ -53,6 +55,7 @@ render() {
    <h2>Required Timers</h2>
    <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
    <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
+   <div className="flex">
    {this.state.data.map((item,index) => { if(item.required === true){
      return(
      <Timer
@@ -66,11 +69,12 @@ render() {
         isDone={item.isDone} />
      );
    }})}
-  
+    </div>
   </section>
   <section id="day">
    <h2>Daily Timers</h2>
    <p>This will be all timers that reset each day</p>
+   <div className="flex">
    {this.state.data.map((item,index) => { if(item.frequency === "day"){
      return(
      <Timer
@@ -84,11 +88,12 @@ render() {
         isDone={item.isDone} />
       );
    }})}
-  
+  </div>
   </section>
   <section id="week">
   <h2>Weekly Timers</h2>
   <p>This will be all timers that reset each week</p>
+  <div className="flex">
   {this.state.data.map((item,index) => { if(item.frequency === "week"){
      return(
      <Timer
@@ -102,11 +107,12 @@ render() {
         isDone={item.isDone} />
       );
    }})}
-  
+  </div>
   </section>
   <section id="other">
    <h2>Other Timers</h2>
    <p>This will be all timers that reset at a custom interval</p>
+   <div className="flex">
    {this.state.data.map((item,index) => { if(item.frequency !== "day" && item.frequency !== "week"){
      return(
      <Timer
@@ -120,7 +126,7 @@ render() {
         isDone={item.isDone} />
       );
    }})}
-  
+  </div>
   </section>
   </article>
  );
