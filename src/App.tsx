@@ -3,18 +3,26 @@ import Navbar from './component/Navbar'
 //import Popup from './component/Popup';
 import Timer from './component/Timer';
 import './App.scss';
+let fs = require('fs');
 
 function loadData(){
   let timerData = require('./data/timerdata.json');
   return timerData;
 }
 
+function saveData(toSave){
+  toSave = JSON.stringify(toSave);
+  fs.writeFile('./data/timerdata.json', toSave, e => {
+    if(e){
+      console.log(e);
+    }
+  });
+}
+
 export default class TimerList extends Component<any,any> {
   constructor(props){
    super(props);
    this.state = {data:loadData()};
-  }
-  componentDidMount(){
   }
 
   handleChange = (e:React.FormEvent<EventTarget>,index) => {
@@ -49,7 +57,7 @@ export default class TimerList extends Component<any,any> {
 render() {
  return (
   <article id="root">
-  <Navbar/>
+  <Navbar />
 
   <section id="top">
    <h2>Required Timers</h2>
