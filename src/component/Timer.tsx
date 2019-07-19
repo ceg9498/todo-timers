@@ -98,19 +98,20 @@ export default class Timer extends Component<ITimer,any> {
     render(){
         
      return(
-      <div className="timerTile">
-        <label>
-            <input 
-                type="checkbox" 
-                name="isDone" 
-                checked={this.props.isDone} 
-                onChange={e => (this.props.handleChange(e, this.props.index))} />
+      <div>
+        <input 
+            type="checkbox" 
+            name="isDone" 
+            id={this.props.name}
+            checked={this.props.isDone} 
+            onChange={e => (this.props.handleChange(e, this.props.index))} />
+        <label htmlFor={this.props.name} className="timerTile">
             {this.props.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>
             }
-            <span>{this.props.name}</span>
-        </label><br/>
+            <span>{this.props.name}</span><br/>
         {this.displayDate()}
+        </label>
       </div>
      );
     }

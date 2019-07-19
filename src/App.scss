@@ -69,8 +69,8 @@ body {
    display: flex;
    flex-wrap: wrap;
  }
-
  .timerTile {
+   display: inline-block;
    width: 300px;
    padding: 20px;
    margin: 5px;
@@ -81,6 +81,23 @@ body {
     padding-left: 5px;
    }
  }
+ 
+input[type="checkbox"] {
+  position: absolute;
+  opacity:0;
+}
+input[type="checkbox"]:checked + label {
+  color: grey;
+  border-color: grey;
+  .reqSym {
+    color: grey;
+  }
+}
+input[type="checkbox"]:focus + .timerTile {
+  background: var(--ltblue);
+  color: black;
+}
+
  .reqSym {
    color: red;
  }
