@@ -68,7 +68,7 @@ render() {
         handleChange={this.handleChange}
         isDone={item.isDone} />
      );
-   }})}
+   } return(<></>) })}
     </div>
   </section>
   <section id="day">
@@ -87,7 +87,7 @@ render() {
         handleChange={this.handleChange}
         isDone={item.isDone} />
       );
-   }})}
+   } return(<></>) })}
   </div>
   </section>
   <section id="week">
@@ -106,7 +106,7 @@ render() {
         handleChange={this.handleChange}
         isDone={item.isDone} />
       );
-   }})}
+   } return(<></>) })}
   </div>
   </section>
   <section id="other">
@@ -125,7 +125,7 @@ render() {
         handleChange={this.handleChange}
         isDone={item.isDone} />
       );
-   }})}
+   } return(<></>) })}
   </div>
   </section>
   </article>
