@@ -6,6 +6,7 @@
   width: 100vw;
   background-color: hsla(206, 9%, 15%, .8);
   border-bottom: 2px solid var(--ltblue);
+  display: flex;
 
   ul {
     list-style: none;
@@ -36,6 +37,10 @@
   }
   #a-top {
     font-weight: bold;
+  }
+
+  span {
+    padding: 10px 20px;
   }
 }
 

@@ -4,6 +4,8 @@ import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import './App.scss';
 
+const moment = require('moment');
+
 function loadData(){
   let timerData = require('./data/timerdata.json');
   return timerData;
@@ -11,15 +13,37 @@ function loadData(){
 
 export default class TimerList extends Component<any,any> {
   constructor(props){
-   super(props);
-   this.state = {data:loadData()};
+    super(props);
+    this.state = {
+      data:loadData(),
+      reset: {
+        day: "",
+      },
+      timer: {
+        day: "",
+      }
+    };
+    this.tick = this.tick.bind(this);
+  }
+  resetDayTime = moment().add(1,'days').hours(11).minutes(0);
+
+  componentWillMount(){
+    // 11 am Eastern, which is 1500 UTC
+    let dayTimer = setInterval(this.tick, 60000);
+    this.setState({
+      reset: {day: this.resetDayTime.fromNow()},
+      timer: {day: dayTimer}
+    });
+  }
+  componentWillUnmount(){
+    if(this.state.timer.day){
+      clearInterval(this.state.timer.day);
+    }
   }
 
   handleChange = (e:React.FormEvent<EventTarget>,index) => {
     let target = e.target as HTMLInputElement;
     let dates = [];
-
-    console.log(index)
 
     // if dates exist in the completion list, set them to the temporary array
     if(this.state.data[index].completed){
@@ -29,7 +53,7 @@ export default class TimerList extends Component<any,any> {
     }
     // if the box is being checked, add the current date onto the end of the array
     if(target.checked === true){
-      let date = new Date()
+      let date = moment().format('LL');
       dates.push(date);
     } else {
     // if the box is being unchecked, remove the last date from the end of the array
@@ -44,12 +68,19 @@ export default class TimerList extends Component<any,any> {
         data: tempData,
     });
   }
+
+  tick(){
+    console.log(this.resetDayTime.fromNow());
+    let update = this.resetDayTime.fromNow();
+    this.setState({
+      reset: {day: update},
+    });
+  }
   
 render() {
-  console.log(this.state.data);
  return (
   <article id="root">
-  <Navbar />
+  <Navbar reset={this.state.reset} />
 
   <section id="top">
    <h2>Required Timers</h2>
