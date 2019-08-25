@@ -70,7 +70,6 @@ export default class TimerList extends Component<any,any> {
   }
 
   tick(){
-    console.log(this.resetDayTime.fromNow());
     let update = this.resetDayTime.fromNow();
     this.setState({
       reset: {day: update},
