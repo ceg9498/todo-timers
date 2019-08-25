@@ -89,6 +89,7 @@ render() {
    <div className="flex">
    {this.state.data.map((item,index) => { if(item.required === true){
      return(
+       <div key={index}>
      <Timer
         key={index}
         index={index}
@@ -98,6 +99,7 @@ render() {
         completed={item.completed}
         handleChange={this.handleChange}
         isDone={item.isDone} />
+        </div>
      );
    } return(<></>) })}
     </div>
@@ -108,6 +110,7 @@ render() {
    <div className="flex">
    {this.state.data.map((item,index) => { if(item.frequency === "day"){
      return(
+      <div key={index}>
      <Timer
         key={index}
         index={index}
@@ -117,6 +120,7 @@ render() {
         completed={item.completed}
         handleChange={this.handleChange}
         isDone={item.isDone} />
+        </div>
       );
    } return(<></>) })}
   </div>
@@ -127,6 +131,7 @@ render() {
   <div className="flex">
   {this.state.data.map((item,index) => { if(item.frequency === "week"){
      return(
+      <div key={index}>
      <Timer
         key={index}
         index={index}
@@ -136,6 +141,7 @@ render() {
         completed={item.completed}
         handleChange={this.handleChange}
         isDone={item.isDone} />
+        </div>
       );
    } return(<></>) })}
   </div>
@@ -146,6 +152,7 @@ render() {
    <div className="flex">
    {this.state.data.map((item,index) => { if(item.frequency !== "day" && item.frequency !== "week"){
      return(
+      <div key={index}>
      <Timer
         key={index}
         index={index}
@@ -155,6 +162,7 @@ render() {
         completed={item.completed}
         handleChange={this.handleChange}
         isDone={item.isDone} />
+        </div>
       );
    } return(<></>) })}
   </div>
