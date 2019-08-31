@@ -1,13 +1,28 @@
 import React, { Component } from 'react';
 import Navbar from './component/Navbar';
-//import Popup from './component/Popup';
 import Timer from './component/Timer';
+import { getReset, setReset, checkResets } from './helpers/Reset'
 import './App.scss';
-
-const moment = require('moment');
 
 function loadData(){
   let timerData = require('./data/timerdata.json');
+  timerData.forEach(item=>{
+    // fix date for the reset time
+    item.resetTime = new Date(item.resetTime);
+
+    // fix date for the array of completed times
+    let tempSubItems = []
+    item.completed.forEach(subItem=>{
+      tempSubItems.push(new Date(subItem));
+    });
+    item.completed = [...tempSubItems];
+
+    // check if the item needs to be reset
+    if(item.isCompleted && checkResets(item.resetTime)){
+      item.isCompleted = false;
+      item.resetTime = null;
+    }
+  });
   return timerData;
 }
 
@@ -17,153 +32,123 @@ export default class TimerList extends Component<any,any> {
     this.state = {
       data:loadData(),
       reset: {
-        day: "",
-      },
-      timer: {
-        day: "",
+        day: getReset("day"),
+        week: getReset("week")
       }
     };
-    this.tick = this.tick.bind(this);
   }
-  resetDayTime = moment().add(1,'days').hours(11).minutes(0);
 
   componentWillMount(){
-    // 11 am Eastern, which is 1500 UTC
-    let dayTimer = setInterval(this.tick, 60000);
-    this.setState({
-      reset: {day: this.resetDayTime.fromNow()},
-      timer: {day: dayTimer}
-    });
+
   }
   componentWillUnmount(){
-    if(this.state.timer.day){
-      clearInterval(this.state.timer.day);
-    }
+
   }
 
-  handleChange = (e:React.FormEvent<EventTarget>,index) => {
+  handleChange = (e:React.FormEvent<EventTarget>,id) => {
     let target = e.target as HTMLInputElement;
-    let dates = [];
+    let data = this.state.data;
 
-    // if dates exist in the completion list, set them to the temporary array
-    if(this.state.data[index].completed){
-        this.state.data[index].completed.forEach(date => {
-            dates.push(date);
-        });
-    }
-    // if the box is being checked, add the current date onto the end of the array
-    if(target.checked === true){
-      let date = moment().format('LL');
-      dates.push(date);
-    } else {
-    // if the box is being unchecked, remove the last date from the end of the array
-        dates.pop();
-    }
-
-    let tempData = this.state.data;
-    tempData[index].completed = dates;
-    tempData[index].isDone = target.checked;
-
-    this.setState({
-        data: tempData,
+    // set the proper item to complete & add the current Date
+    data.forEach(item=>{
+      if(item.id === id){
+        // set the item based on checkbox state
+        item.isCompleted = target.checked;
+        // if the checkbox IS checked, do extra steps
+        if(target.checked){
+          item.completed.push(new Date());
+          if(item.completed.length > 7){
+            // if there are more than 7 date entries, remove the oldest
+            item.completed.shift();
+          }
+          item.resetTime = setReset(item.period);
+          console.log(item.resetTime.toJSON());
+          console.log(item.completed[item.completed.length-1].toJSON());
+        } else {
+          // if the checkbox IS NOT checked, remove the latest date & reset date
+          item.completed.pop();
+          item.resetTime = null;
+        }
+      }
     });
+    // apply the new data to STATE
+    this.setState({
+      data:data
+    });
+    console.log("Changed data: ",data);
   }
 
-  tick(){
-    let update = this.resetDayTime.fromNow();
+  handleResetCheck = () => {
+    let data = this.state.data;
+    data.forEach(item => {
+      if(item.isCompleted === true && checkResets(item.resetTime)){
+        item.resetTime = null;
+        item.isCompleted = false;
+      }
+    });
     this.setState({
-      reset: {day: update},
+      data: data
     });
   }
   
 render() {
+  console.log(this.state.reset);
  return (
   <article id="root">
-  <Navbar reset={this.state.reset} />
+  <Navbar />
 
   <section id="top">
    <h2>Required Timers</h2>
    <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
    <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
+   <button onClick={this.handleResetCheck}>Check for Reset Items</button>
    <div className="flex">
-   {this.state.data.map((item,index) => { if(item.required === true){
+   {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
      return(
-       <div key={index}>
-     <Timer
-        key={index}
-        index={index}
-        name={item.name}
-        frequency={item.frequency}
-        required={item.required} 
-        completed={item.completed}
-        handleChange={this.handleChange}
-        isDone={item.isDone} />
-        </div>
+      <div key={item.id}>
+        <Timer {...item} handleChange={this.handleChange} />
+      </div>
      );
-   } return(<></>) })}
+   })}
     </div>
   </section>
   <section id="day">
    <h2>Daily Timers</h2>
    <p>This will be all timers that reset each day</p>
    <div className="flex">
-   {this.state.data.map((item,index) => { if(item.frequency === "day"){
+   {this.state.data.filter(item=>item.frequency === "day").map((item,index) => {
      return(
       <div key={index}>
-     <Timer
-        key={index}
-        index={index}
-        name={item.name}
-        frequency={item.frequency}
-        required={item.required} 
-        completed={item.completed}
-        handleChange={this.handleChange}
-        isDone={item.isDone} />
-        </div>
-      );
-   } return(<></>) })}
+        <Timer index={index} {...item} handleChange={this.handleChange} />
+      </div>
+    );
+    })}
   </div>
   </section>
   <section id="week">
   <h2>Weekly Timers</h2>
   <p>This will be all timers that reset each week</p>
   <div className="flex">
-  {this.state.data.map((item,index) => { if(item.frequency === "week"){
-     return(
+  {this.state.data.filter(item=>item.frequency === "week").map((item,index) => {
+    return(
       <div key={index}>
-     <Timer
-        key={index}
-        index={index}
-        name={item.name}
-        frequency={item.frequency}
-        required={item.required} 
-        completed={item.completed}
-        handleChange={this.handleChange}
-        isDone={item.isDone} />
-        </div>
-      );
-   } return(<></>) })}
+        <Timer index={index} {...item} handleChange={this.handleChange} />
+      </div>
+    );
+   })}
   </div>
   </section>
   <section id="other">
    <h2>Other Timers</h2>
    <p>This will be all timers that reset at a custom interval</p>
    <div className="flex">
-   {this.state.data.map((item,index) => { if(item.frequency !== "day" && item.frequency !== "week"){
+   {this.state.data.filter(item=>(item.frequency !== "day" && item.frequency !== "week")).map((item,index) => {
      return(
       <div key={index}>
-     <Timer
-        key={index}
-        index={index}
-        name={item.name}
-        frequency={item.frequency}
-        required={item.required} 
-        completed={item.completed}
-        handleChange={this.handleChange}
-        isDone={item.isDone} />
-        </div>
-      );
-   } return(<></>) })}
+        <Timer index={index} {...item} handleChange={this.handleChange} />
+      </div>
+    );
+   })}
   </div>
   </section>
   </article>

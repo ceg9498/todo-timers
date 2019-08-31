@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import './timer.scss'
 
 interface ITimer {
-    index: number,
-    name: string,
+    id: number,
+    title: string,
     frequency: string,
     required: boolean,
     completed: Date[],
     handleChange: any,
-    isDone: boolean,
+    isCompleted: boolean,
 }
 
 export default class Timer extends Component<ITimer,any> {
@@ -22,18 +22,18 @@ export default class Timer extends Component<ITimer,any> {
       <div>
         <input 
             type="checkbox" 
-            name="isDone" 
-            id={this.props.name}
-            checked={this.props.isDone} 
-            onChange={e => (this.props.handleChange(e, this.props.index))} />
-        <label htmlFor={this.props.name} className="timerTile">
+            name="isCompleted" 
+            id={this.props.title}
+            checked={this.props.isCompleted} 
+            onChange={e => (this.props.handleChange(e, this.props.id))} />
+        <label htmlFor={this.props.title} className="timerTile">
             {this.props.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>
             }
-            <span>{this.props.name}</span><br/>
+            <span>{this.props.title}</span><br/>
             
-                {this.props.completed && this.props.completed.length > 0 ?
-                    <span className="date">Last completed on: {this.props.completed}</span>
+                {this.props.completed.length > 0 ?
+                    <span className="date">Last completed on: {this.props.completed[this.props.completed.length-1].toDateString()}</span>
                 :
                     <span className="date"></span>
                 }

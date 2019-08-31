@@ -1,7 +1,7 @@
 import React from 'react'
 import './navbar.scss'
 
-export default function Navbar(props){
+export default function Navbar(){
     return (
         <nav id="navbar">
             <ul role="navigation">
@@ -15,9 +15,6 @@ export default function Navbar(props){
             <a href="#other">Other</a>
             </li>
             </ul>
-            {props.reset &&
-                <span>Daily Reset {props.reset.day}</span>
-            }
         </nav>
    );
 }

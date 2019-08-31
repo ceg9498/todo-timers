@@ -1,73 +1,118 @@
 [{
-    "name": "Expert Roulette",
-    "frequency": "day",
+    "id": 1,
+    "title": "Expert Roulette",
+    "resetTime": null,
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "50/60/70 Roulette",
-    "frequency": "day",
+    "id": 2,
+    "title": "50/60/70 Roulette",
+    "resetTime": null,
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Leveling Roulette",
-    "frequency": "day",
+    "id": 3,
+    "title": "Leveling Roulette",
+    "resetTime": null,
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Trial Roulette",
-    "frequency": "day",
+    "id": 4,
+    "title": "Trial Roulette",
+    "resetTime": null,
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Main Story Roulette",
-    "frequency": "day",
+    "id": 5,
+    "title": "Main Story Roulette",
+    "resetTime": "2019-09-01T15:00:00.000Z",
     "required": false,
-    "completed": null,
-    "isDone": false
+    "completed": ["2019-08-31T20:35:15.125Z"],
+    "isCompleted": true,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Guildhest Roulette",
-    "frequency": "day",
+    "id": 6,
+    "title": "Guildhest Roulette",
+    "resetTime": null,
     "required": false,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Alliance Raid Roulette",
-    "frequency": "day",
+    "id": 7,
+    "title": "Alliance Raid Roulette",
+    "resetTime": "2019-09-01T15:00:00.000Z",
     "required": false,
-    "completed": null,
-    "isDone": false
+    "completed": ["2019-08-31T22:47:29.836Z"],
+    "isCompleted": true,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Normal Raid Roulette",
-    "frequency": "day",
+    "id": 8,
+    "title": "Normal Raid Roulette",
+    "resetTime": null,
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Mentor Roulette",
-    "frequency": "day",
+    "id": 9,
+    "title": "Mentor Roulette",
+    "resetTime": null,
     "required": false,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Frontlines",
-    "frequency": "day",
+    "id": 10,
+    "title": "Frontlines",
+    "resetTime": null,
     "required": false,
-    "completed": null,
-    "isDone": false
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Beast Tribe: Vath",
-    "frequency": "day",
-    "required": true,
-    "completed": null,
-    "isDone": false
+    "id": 11,
+    "title": "Beast Tribe: Vath",
+    "resetTime": "2019-08-02T15:00:00.000Z",
+    "required": false,
+    "completed": ["2019-08-01T18:00:00.000Z"],
+    "isCompleted": true,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
 },{
-    "name": "Beast Tribe: Vanu Vanu",
-    "frequency": "day",
+    "id": 12,
+    "title": "Beast Tribe: Vanu Vanu",
+    "resetTime": null,
+    "required": false,
+    "completed": [],
+    "isCompleted": false,
+    "period": "r-0000-00-00-11-00-0123456",
+    "frequency": "day"
+},{
+    "id": 13,
+    "title": "Cap Tomes",
+    "resetTime": "2019-09-03T08:00:00.000Z",
     "required": true,
-    "completed": null,
-    "isDone": false
+    "completed": ["2019-08-31T01:57:18.807Z"],
+    "isCompleted": true,
+    "period": "r-0000-00-00-4-00-2",
+    "frequency": "week"
 }]
