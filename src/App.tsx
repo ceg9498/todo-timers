@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import { getReset, setReset, checkResets } from './helpers/Reset'
+import { /*initIDB, addMany,*/ loadData } from './data/data'
 import './App.scss';
 
-function loadData(){
+/*
+function oldLoadData(){
   let timerData = require('./data/timerdata.json');
   timerData.forEach(item=>{
     // fix date for the reset time
@@ -24,13 +26,13 @@ function loadData(){
     }
   });
   return timerData;
-}
+}*/
 
 export default class TimerList extends Component<any,any> {
   constructor(props){
     super(props);
     this.state = {
-      data:loadData(),
+      data:null,
       reset: {
         day: getReset("day"),
         week: getReset("week")
@@ -39,7 +41,11 @@ export default class TimerList extends Component<any,any> {
   }
 
   componentWillMount(){
-
+    //initIDB('timers','timerData');
+    //addMany('timers','timerData',oldLoadData())
+    this.setState({
+      data: loadData('timers','timerData')
+    });
   }
   componentWillUnmount(){
 
@@ -92,7 +98,11 @@ export default class TimerList extends Component<any,any> {
   }
   
 render() {
+  console.log("State data: ",this.state.data);
   console.log(this.state.reset);
+  if(this.state.data === null || this.state.data === undefined){
+    return(<></>);
+  }
  return (
   <article id="root">
   <Navbar />
