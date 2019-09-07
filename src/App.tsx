@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import { getReset, setReset, checkResets } from './helpers/Reset'
-import { initIDB, loadData, filterData } from './data/data'
+import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany } from './data/data'
 import { TimerType } from './data/schema'
+import AddForm from './component/addForm'
 import './App.scss';
 
 const emptyTimer = {
@@ -67,6 +68,7 @@ export default class TimerList extends Component<any,any> {
           item.completed.pop();
           item.resetTime = null;
         }
+        addOrUpdateOne(item);
       }
     });
     // apply the new data to STATE
@@ -84,16 +86,26 @@ export default class TimerList extends Component<any,any> {
         item.isCompleted = false;
       }
     });
+    addOrUpdateMany(data);
     this.setState({
       data: data
     });
   }
+
+  addTimer = (data:TimerType) => {
+    // add an id to the data
+    let nID = 0;
+    // check if nID exists in the data already
+    
+  }
+
+  displayAddForm(){
+    return(
+      <AddForm addTimer={this.addTimer} />
+    );
+  }
   
 render() {
-  console.log(this.state.reset);
-  if(this.state.data === null || this.state.data === undefined){
-    return(<></>);
-  }
  return (
   <article id="root">
   <Navbar />

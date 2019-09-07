@@ -38,17 +38,17 @@ var initIDB = new Promise((resolve,reject)=> {
   }
 });
 
-function addMany(dbName:string, storeName:string, items:Array<any>) {
-  var request = window.indexedDB.open(dbName,DB_VER);
+function addOrUpdateMany(items:Array<TimerType>) {
+  var request = window.indexedDB.open('timers',DB_VER);
   console.log("Attempting to add many...");
   request.onsuccess = (event:any) => {
     let db = request.result;
-    var transaction = db.transaction(storeName, 'readwrite');
+    var transaction = db.transaction('timerData', 'readwrite');
 
-    var store = transaction.objectStore(storeName);
+    var store = transaction.objectStore('timerData');
     var objStoreReq;
     items.forEach(item => 
-      objStoreReq = store.add(item)
+      objStoreReq = store.put(item)
     );
     objStoreReq.onsuccess = function(event) {
       console.log('[Transaction] ALL DONE!');
@@ -59,13 +59,13 @@ function addMany(dbName:string, storeName:string, items:Array<any>) {
   }
 }
 
-function addOne(dbName:string, storeName:string, item:any){
-  var request = window.indexedDB.open(dbName,DB_VER);
+function addOrUpdateOne(item:TimerType){
+  var request = window.indexedDB.open('timers',DB_VER);
   request.onsuccess = (event:any) => {
     let db = request.result;
-    var transaction = db.transaction(storeName, 'readwrite');
-    var store = transaction.objectStore('store');
-    store.add(item);
+    var transaction = db.transaction('timerData', 'readwrite');
+    var store = transaction.objectStore('timerData');
+    store.put(item);
     transaction.oncomplete = (event:any) => {
       return true;
     }
@@ -130,4 +130,4 @@ function filterData(data:TimerType[]):TimerType[]{
   return data;
 }
 
-export { initIDB, addMany, addOne, loadData, filterData }
+export { initIDB, addOrUpdateMany, addOrUpdateOne, loadData, filterData }
