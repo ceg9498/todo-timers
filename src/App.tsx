@@ -2,37 +2,25 @@ import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import { getReset, setReset, checkResets } from './helpers/Reset'
-import { /*initIDB, addMany,*/ loadData } from './data/data'
+import { initIDB, loadData, filterData } from './data/data'
+import { TimerType } from './data/schema'
 import './App.scss';
 
-/*
-function oldLoadData(){
-  let timerData = require('./data/timerdata.json');
-  timerData.forEach(item=>{
-    // fix date for the reset time
-    item.resetTime = new Date(item.resetTime);
-
-    // fix date for the array of completed times
-    let tempSubItems = []
-    item.completed.forEach(subItem=>{
-      tempSubItems.push(new Date(subItem));
-    });
-    item.completed = [...tempSubItems];
-
-    // check if the item needs to be reset
-    if(item.isCompleted && checkResets(item.resetTime)){
-      item.isCompleted = false;
-      item.resetTime = null;
-    }
-  });
-  return timerData;
-}*/
+const emptyTimer = {
+  id: -1,
+  title: '',
+  resetTime: null,
+  required: false,
+  completed: [],
+  isCompleted: false,
+  period: '',
+};
 
 export default class TimerList extends Component<any,any> {
   constructor(props){
     super(props);
     this.state = {
-      data:null,
+      data:[emptyTimer],
       reset: {
         day: getReset("day"),
         week: getReset("week")
@@ -41,14 +29,18 @@ export default class TimerList extends Component<any,any> {
   }
 
   componentWillMount(){
-    //initIDB('timers','timerData');
-    //addMany('timers','timerData',oldLoadData())
-    this.setState({
-      data: loadData('timers','timerData')
+    initIDB.then(()=>{
+      loadData.then((data:TimerType[])=>{
+        this.setState({
+          data:filterData(data)
+        });
+      }).catch((error)=>{
+        console.error("Error loading data from IndexedDB: ",error);
+      });
+    }).catch(error => {
+      console.error("Error opening IndexedDB: ", error);
+      // on error, set state.data to an empty timer object
     });
-  }
-  componentWillUnmount(){
-
   }
 
   handleChange = (e:React.FormEvent<EventTarget>,id) => {
@@ -98,7 +90,6 @@ export default class TimerList extends Component<any,any> {
   }
   
 render() {
-  console.log("State data: ",this.state.data);
   console.log(this.state.reset);
   if(this.state.data === null || this.state.data === undefined){
     return(<></>);

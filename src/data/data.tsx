@@ -1,17 +1,21 @@
+import { TimerType } from './schema';
+import { checkResets } from '../helpers/Reset'
+
 const DB_VER = 1;
 
-function initIDB(dbName:string, storeName: string) {
+var initIDB = new Promise((resolve,reject)=> {
   // dbName will be the DB name, storeName will be the store name.
   if(!('indexedDB' in window)){
     console.log("This browser doesn't support IndexedDB");
     return;
   }
   // create or open IndexedDB
-  var request = window.indexedDB.open(dbName,DB_VER);
+  var request = window.indexedDB.open('timers',DB_VER);
 
   // handle errors
   request.onerror = function(event:any){
     console.log("IndexedDB Error: ", request.error);
+    reject(request.error);
   }
 
   // handle db upgrades
@@ -20,7 +24,7 @@ function initIDB(dbName:string, storeName: string) {
     // save the IDBDatabase interface
     var db = event.target.result;
     // Create an objectStore for the database
-    var store = db.createObjectStore(storeName,{keyPath:'id',autoIncrement:true});
+    var store = db.createObjectStore('timerData',{keyPath:'id',autoIncrement:true});
     store.onsuccess = () => {
       console.log("store created successfully")
     }
@@ -30,10 +34,9 @@ function initIDB(dbName:string, storeName: string) {
   }
 
   request.onsuccess = (event:any) => {
-    // return the DB result
-    return request.result;
+    resolve();
   }
-}
+});
 
 function addMany(dbName:string, storeName:string, items:Array<any>) {
   var request = window.indexedDB.open(dbName,DB_VER);
@@ -82,27 +85,49 @@ function addOne(dbName:string, storeName:string, item:any){
   */
 }
 
-function loadData(dbName:string, storeName: string){
-  var request = window.indexedDB.open(dbName,DB_VER);
-  let db;
+var loadData = new Promise((resolve, reject) => {
+  // do things!
+  var request = window.indexedDB.open('timers',DB_VER);
   request.onsuccess = (event:any) => {
-    db = request.result;
-    var transaction = db.transaction(storeName, 'readwrite');
+    let db = request.result;
+    var transaction = db.transaction('timerData', 'readwrite');
 
-    var store = transaction.objectStore(storeName);
-    let objstoreReq = store.getAll()
-    objstoreReq.onsuccess = (event:any) => {
-      let data = event.target.result
+    var store = transaction.objectStore('timerData');
+    let objStoreReq = store.getAll()
+    objStoreReq.onsuccess = (event:any) => {
       console.log("Returning data...")
-      return data;
+      resolve(event.target.result);
     }
-    objstoreReq.onerror = (event:any) => {
+    objStoreReq.onerror = (event:any) => {
       console.log("Error: ", event.target.error)
+      reject(event.target.error);
     }
   }
   request.onerror = (event:any) => {
     console.log("Unable to retrieve data. Error: ", event.target.error)
+    reject(event.target.error);
   }
+});
+
+function filterData(data:TimerType[]):TimerType[]{
+  data.forEach(item=>{
+    // fix date for the reset time
+    item.resetTime = new Date(item.resetTime);
+
+    // fix date for the array of completed times
+    let tempSubItems = []
+    item.completed.forEach(subItem=>{
+      tempSubItems.push(new Date(subItem));
+    });
+    item.completed = [...tempSubItems];
+
+    // check if the item needs to be reset
+    if(item.isCompleted && checkResets(item.resetTime)){
+      item.isCompleted = false;
+      item.resetTime = null;
+    }
+  });
+  return data;
 }
 
-export { initIDB, addMany, addOne, loadData }
+export { initIDB, addMany, addOne, loadData, filterData }
