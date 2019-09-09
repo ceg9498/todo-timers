@@ -91,7 +91,6 @@ export function setReset(period:String):Date{
           if(index === daysofweek.length){
             index = 0;
           }
-          console.log("Target day of week: ", daysofweek[index])
           let distance = daysofweek[index] + DAYS_IN_WEEK - result.getDay();
           distance %= 7;
           result.setDate(result.getDate() + distance);
@@ -102,7 +101,6 @@ export function setReset(period:String):Date{
         if(index === daysofweek.length){
           index = 0;
         }
-        console.log("Target day of week: ", daysofweek[index])
         let distance = daysofweek[index] + DAYS_IN_WEEK - result.getDay();
         distance %= 7;
         result.setDate(result.getDate() + distance);

@@ -19,7 +19,7 @@ export default class Timer extends Component<ITimer,any> {
     
     render(){
      return(
-      <div>
+      <div className="timerBox">
         <input 
             type="checkbox" 
             name="isCompleted" 

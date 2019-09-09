@@ -7,25 +7,16 @@ import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
 import './App.scss';
 
-const emptyTimer = {
-  id: -1,
-  title: '',
-  resetTime: null,
-  required: false,
-  completed: [],
-  isCompleted: false,
-  period: '',
-};
-
 export default class TimerList extends Component<any,any> {
   constructor(props){
     super(props);
     this.state = {
-      data:[emptyTimer],
+      data:[],
       reset: {
         day: getReset("day"),
         week: getReset("week")
-      }
+      },
+      displayAddForm: false
     };
   }
 
@@ -94,15 +85,18 @@ export default class TimerList extends Component<any,any> {
 
   addTimer = (data:TimerType) => {
     // add an id to the data
-    let nID = 0;
+    //let nID = 0;
     // check if nID exists in the data already
     
+    this.setState({
+      displayAddForm: false
+    })
   }
 
-  displayAddForm(){
-    return(
-      <AddForm addTimer={this.addTimer} />
-    );
+  displayAddForm = () => {
+    this.setState({
+      displayAddForm: true
+    })
   }
   
 render() {
@@ -110,19 +104,26 @@ render() {
   <article id="root">
   <Navbar />
 
+  {this.state.displayAddForm &&
+    <section id="addTimer">
+      <AddForm addTimer={this.addTimer} />
+    </section>
+  }
+
   <section id="top">
-   <h2>Required Timers</h2>
-   <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
-   <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
-   <button onClick={this.handleResetCheck}>Check for Reset Items</button>
-   <div className="flex">
-   {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
-     return(
-      <div key={item.id}>
-        <Timer {...item} handleChange={this.handleChange} />
-      </div>
-     );
-   })}
+    <h2>Required Timers</h2>
+    <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
+    <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
+    <button onClick={this.handleResetCheck}>Check for Reset Items</button>
+    <div className="flex">
+    <button onClick={this.displayAddForm}>Add a timer!</button>
+    {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
+      return(
+        <div key={item.id}>
+          <Timer {...item} handleChange={this.handleChange} />
+        </div>
+      );
+    })}
     </div>
   </section>
   <section id="day">
