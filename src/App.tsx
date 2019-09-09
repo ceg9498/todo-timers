@@ -128,8 +128,8 @@ render() {
     <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
     <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
     <button onClick={this.handleResetCheck}>Check for Reset Items</button>
-    <div className="flex">
     <button onClick={this.displayAddForm}>Add a timer!</button>
+    <div className="flex">
     {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
       return(
         <div key={item.id}>
