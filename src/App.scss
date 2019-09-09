@@ -34,6 +34,10 @@ fieldset {
   width: 90%;
 }
 
+input[type="number"]{
+  width: 4em;
+}
+
 .flex {
   display: flex;
   flex-wrap: wrap;
