@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
-import { getReset, setReset, checkResets } from './helpers/Reset'
+import { setReset, checkResets } from './helpers/Reset'
 import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany } from './data/data'
 import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
@@ -12,10 +12,6 @@ export default class TimerList extends Component<any,any> {
     super(props);
     this.state = {
       data:[],
-      reset: {
-        day: getReset("day"),
-        week: getReset("week")
-      },
       displayAddForm: false
     };
   }

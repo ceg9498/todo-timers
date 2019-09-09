@@ -1,41 +1,4 @@
-const TUESDAY = 2;
 const DAYS_IN_WEEK = 7;
-
-// import a period of time (day, week, other) and return the time at which the reset occurs
-export function getReset(period:String):Date{
-  let reset = new Date();
-  if(period === "day"){
-    if(reset.getUTCHours() > 15){
-        // if 1500 UTC has already passed today, set the date to tomorrow
-        reset.setUTCDate(reset.getUTCDate()+1);
-    }
-    // then set the hours to 1500
-    reset.setUTCHours(15);
-  } else if(period === "week"){
-    // Tuesday @ 8am UTC
-    if(reset.getUTCDay() === TUESDAY){
-        // if it's currently tuesday UTC:
-        if(reset.getUTCHours() > 8){
-            // if it's after 8, reset will be next week
-            reset.setUTCDate(reset.getUTCDate()+DAYS_IN_WEEK);
-        }
-    } else {
-        // it's not Tuesday, so time for some magic:
-        let distance = TUESDAY + DAYS_IN_WEEK - reset.getUTCDay();
-        reset.setUTCDate(reset.getUTCDate()+distance);
-    }
-    // regardless of what day it is, reset is at 8 UTC:
-    reset.setUTCHours(8);
-  } else {
-    // Based on the text in timer.frequency
-    // Need to figure out how I want to store the data
-  }
-  // minutes, seconds, and ms should always be 0
-  reset.setUTCMinutes(0);
-  reset.setUTCSeconds(0);
-  reset.setUTCMilliseconds(0);
-  return reset;
-}
 
 export function setReset(period:String):Date{
   let data = period.split('-');
