@@ -73,20 +73,9 @@ function addOrUpdateOne(item:TimerType){
       return false;
     }
   }
-  /*
-  request.then((db) => {
-    var transaction = db.transaction(storeName, 'readwrite');
-    var store = transaction.objectStore('store');
-    store.add(item);
-    return transaction.complete;
-  }).then(() => {
-    console.log("Added item to the data store!");
-  });
-  */
 }
 
 var loadData = new Promise((resolve, reject) => {
-  // do things!
   var request = window.indexedDB.open('timers',DB_VER);
   request.onsuccess = (event:any) => {
     let db = request.result;
