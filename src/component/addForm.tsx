@@ -8,15 +8,19 @@ export default class AddForm extends React.Component<any,any>{
       title: "",
       required: false,
       isCompleted: false,
-      hours: "11",
-      minutes: "00",
+      timerType: "regular",
+      hour: 11,
+      minute: 0,
+      allDays: false,
       sun: false,
       mon: false,
       tue: false,
       wed: false,
       thu: false,
       fri: false,
-      sat: false
+      sat: false,
+      unitValue: 0,
+      unitType: "hours"
     };
   }
 
@@ -26,14 +30,19 @@ export default class AddForm extends React.Component<any,any>{
     const name = target.name;
 
     // cleanse hour/minute data
+    if(name === "hour" || name === "minute"){
+      if(typeof value !== "number"){
+        value = 0;
+      }
+    }
     if(name === "hour"){
       value = parseInt(value);
       console.log("Hour value is: ",value)
       if(value < 0 || value > 24){
         console.error("Hour value is invalid", value)
         return
-      } else if(value === 0){
-        value = "00"
+      } else if(value === undefined){
+        value = 0;
       }
     } else if(name === "minute"){
       value = parseInt(value);
@@ -41,24 +50,52 @@ export default class AddForm extends React.Component<any,any>{
       if(value < 0 || value >= 60){
         console.error("Minute value is invalid", value)
         return
-      } else if(value === 0){
-        value = "00"
+      } else if(value === undefined){
+        value = 0;
       }
     }
-    // Day of Week data is calculated/formatted in calculateDayOfWeek()
 
+    // setState for allDays is slightly more involved
+    if(name === "allDays"){
+      console.log("all days toggled")
+      this.setState({
+        sun: true,
+        mon: true,
+        tue: true,
+        wed: true,
+        thu: true,
+        fri: true,
+        sat: true
+      });
+    }
     this.setState({
       [name]: value
     });
+  }
+
+  intervalPeriod = () => {
+    let period = 'i-' + this.state.unitValue + '-' + this.state.unitType;
+    console.log(period);
+    return period;
+  }
+
+  regularPeriod = () => {
+    let period = 'r-0000-00-00-' + this.state.hour + '-' + this.state.minute + '-';
+    period += this.calculateDayOfWeek();
+    console.log(period);
+    return period;
   }
 
   handleSubmit = (event:any) => {
     event.preventDefault();
 
     // calculate the reset period
-    let period = 'r-0000-00-00-' + this.state.hour + '-' + this.state.minute + '-';
-    period += this.calculateDayOfWeek();
-    console.log(period);
+    let period:String;
+    if(this.state.timerType === "interval"){
+      period = this.intervalPeriod();
+    } else {
+      period = this.regularPeriod();
+    }
 
     let completed = []
     if(this.state.isCompleted){
@@ -80,26 +117,30 @@ export default class AddForm extends React.Component<any,any>{
 
   calculateDayOfWeek(){
     let DoW = "";
-    if(this.state.sun){
-      DoW += '0';
-    }
-    if(this.state.mon){
-      DoW += '1';
-    }
-    if(this.state.tue){
-      DoW += '2';
-    }
-    if(this.state.wed){
-      DoW += '3';
-    }
-    if(this.state.thu){
-      DoW += '4';
-    }
-    if(this.state.fri){
-      DoW += '5';
-    }
-    if(this.state.sat){
-      DoW += '6';
+    if(this.state.allDays){
+      DoW = "0123456";
+    } else {
+      if(this.state.sun){
+        DoW += '0';
+      }
+      if(this.state.mon){
+        DoW += '1';
+      }
+      if(this.state.tue){
+        DoW += '2';
+      }
+      if(this.state.wed){
+        DoW += '3';
+      }
+      if(this.state.thu){
+        DoW += '4';
+      }
+      if(this.state.fri){
+        DoW += '5';
+      }
+      if(this.state.sat){
+        DoW += '6';
+      }
     }
     return DoW;
   }
@@ -107,27 +148,48 @@ export default class AddForm extends React.Component<any,any>{
   render(){
   return(
     <form onSubmit={this.handleSubmit}>
-      <label>Title: 
+      <label>Title:&nbsp;
         <input 
           type="text" 
           name="title"
           value={this.state.title}
           onChange={this.handleChange} />
-      </label>
-      <label>Required?
+      </label><br/>
+      <label>
         <input 
           type="checkbox"
           name="required"
           value={this.state.required}
           onChange={this.handleChange} />
-      </label>
-      <label>Completed today?
+        Completion is Important or Required
+      </label><br/>
+      <label>
         <input 
           type="checkbox"
           name="isCompleted"
           value={this.state.isCompleted}
           onChange={this.handleChange} />
+        Create as Completed
+      </label><br/>
+      <label>
+        <input
+          type="radio"
+          name="timerType"
+          value="regular"
+          checked={this.state.timerType === "regular"}
+          onChange={this.handleChange} />
+        Regular Timer
       </label>
+      <label>
+        <input
+          type="radio"
+          name="timerType"
+          value="interval"
+          checked={this.state.timerType === "interval"}
+          onChange={this.handleChange} />
+        Interval Timer
+      </label>
+      {this.state.timerType === "regular" ?
       <fieldset>
         <legend>When should this timer reset?</legend>
           <label>
@@ -145,35 +207,69 @@ export default class AddForm extends React.Component<any,any>{
               onChange={this.handleChange} />
           minutes</label>
           <br/>on<br/>
-          <label>Sunday
+          <label>
+            <input type="checkbox" name="allDays" value={this.state.allDays}
+              onChange={this.handleChange} />
+            Select All Days
+          </label><br/>
+          <label>
             <input type="checkbox" name="sun" value={this.state.sun}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Sunday
           </label>
-          <label>Monday
+          <label>
             <input type="checkbox" name="mon" value={this.state.mon}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Monday
           </label>
-          <label>Tuesday
+          <label>
             <input type="checkbox" name="tue" value={this.state.tue}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Tuesday
           </label>
-          <label>Wednesday
+          <label>
             <input type="checkbox" name="wed" value={this.state.wed}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Wednesday
           </label>
-          <label>Thursday
+          <label>
             <input type="checkbox" name="thu" value={this.state.thu}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Thursday
           </label>
-          <label>Friday
+          <label>
             <input type="checkbox" name="fri" value={this.state.fri}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Friday
           </label>
-          <label>Saturday
+          <label>
             <input type="checkbox" name="sat" value={this.state.sat}
-          onChange={this.handleChange} />
+              onChange={this.handleChange} />
+            Saturday
           </label>
       </fieldset>
+      :
+      <fieldset>
+        <legend>When should this timer reset?</legend>
+        <label>
+          <input 
+            type="number" 
+            name="unitValue" 
+            value={this.state.unitValue}
+            onChange={this.handleChange} />
+        </label>
+        <label>
+          <select
+            name="unitType"
+            value={this.state.unitType}
+            onChange={this.handleChange}>
+            <option value="minutes">minutes</option>
+            <option value="hours">hours</option>
+            <option value="days">days</option>
+          </select>
+        </label>
+      </fieldset>
+      }
       <input type="submit" value="Submit" />
     </form>
   );
