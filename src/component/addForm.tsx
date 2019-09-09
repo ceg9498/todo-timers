@@ -58,15 +58,17 @@ export default class AddForm extends React.Component<any,any>{
     // setState for allDays is slightly more involved
     if(name === "allDays"){
       console.log("all days toggled")
-      this.setState({
-        sun: true,
-        mon: true,
-        tue: true,
-        wed: true,
-        thu: true,
-        fri: true,
-        sat: true
-      });
+      this.setState(()=>{
+        return {
+          sun: !this.state.sun,
+          mon: !this.state.mon,
+          tue: !this.state.tue,
+          wed: !this.state.wed,
+          thu: !this.state.thu,
+          fri: !this.state.fri,
+          sat: !this.state.sat
+        }}
+      );
     }
     this.setState({
       [name]: value
@@ -210,7 +212,7 @@ export default class AddForm extends React.Component<any,any>{
           <label>
             <input type="checkbox" name="allDays" value={this.state.allDays}
               onChange={this.handleChange} />
-            Select All Days
+            Toggle All Days
           </label><br/>
           <label>
             <input type="checkbox" name="sun" value={this.state.sun}
