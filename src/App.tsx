@@ -52,8 +52,6 @@ export default class TimerList extends Component<any,any> {
             item.completed.shift();
           }
           item.resetTime = setReset(item.period);
-          console.log(item.resetTime.toJSON());
-          console.log(item.completed[item.completed.length-1].toJSON());
         } else {
           // if the checkbox IS NOT checked, remove the latest date & reset date
           item.completed.pop();
@@ -66,7 +64,6 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       data:data
     });
-    console.log("Changed data: ",data);
   }
 
   handleResetCheck = () => {
@@ -94,7 +91,6 @@ export default class TimerList extends Component<any,any> {
     });
     while(ids.includes(nID)){
       nID++;
-      console.log("Testing nID: ", nID)
     }
     data.id = nID;
     addOrUpdateOne(data);
