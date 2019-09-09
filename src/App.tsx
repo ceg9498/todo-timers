@@ -12,6 +12,8 @@ export default class TimerList extends Component<any,any> {
     super(props);
     this.state = {
       data:[],
+      nextReset: null,
+      timeout: null,
       displayAddForm: false
     };
   }
@@ -19,16 +21,23 @@ export default class TimerList extends Component<any,any> {
   componentWillMount(){
     initIDB.then(()=>{
       loadData.then((data:TimerType[])=>{
-        this.setState({
-          data:filterData(data)
+        this.setState(()=>{
+          return {data:filterData(data)}
         });
+        this.createTimeout(data);
       }).catch((error)=>{
         console.error("Error loading data from IndexedDB: ",error);
       });
     }).catch(error => {
       console.error("Error opening IndexedDB: ", error);
-      // on error, set state.data to an empty timer object
     });
+  }
+
+  componentWillUnmount(){
+    // if a timeout exists, clear it
+    if(this.state.timeout !== null){
+      clearTimeout(this.state.timeout);
+    }
   }
 
   handleChange = (e:React.FormEvent<EventTarget>,id) => {
@@ -60,9 +69,11 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       data:data
     });
+    // re-create timeout based on the new data
+    this.createTimeout(data);
   }
 
-  handleResetCheck = () => {
+  handleReset = () => {
     let data = this.state.data;
     data.forEach(item => {
       if(item.isCompleted === true && checkResets(item.resetTime)){
@@ -71,8 +82,42 @@ export default class TimerList extends Component<any,any> {
       }
     });
     addOrUpdateMany(data);
+    this.createTimeout(data);
     this.setState({
       data: data
+    });
+  }
+
+  createTimeout = (data?:TimerType[]) => {
+    // clear an existing timeout before creating a new one
+    if(this.state.timeout !== null){
+      clearTimeout(this.state.timeout);
+    }
+    // if no data variable was passed, use state's data
+    if(data === undefined){
+      data = this.state.data;
+    }
+    // set default MS to 24h
+    let timeoutMS = 24 * 60 * 60 * 1000;
+    // nextReset will hold the date of the next timeout check
+    let nextReset:Date;
+    let now = new Date()
+    data.forEach(item=>{
+      if(item.isCompleted){
+        if((item.resetTime.valueOf()-now.valueOf()) < timeoutMS){
+          // set the timeoutMS to be the MS between now and timer
+          timeoutMS = item.resetTime.valueOf() - now.valueOf();
+          nextReset = item.resetTime;
+        }
+      }
+    });
+    // add 10 seconds to timeoutMS for a buffer period
+    timeoutMS += 10000;
+    let timeout = setTimeout(()=>this.handleReset(),timeoutMS);
+    // add data, timeout, and nextReset to STATE
+    this.setState({
+      nextReset:nextReset,
+      timeout:timeout
     });
   }
 
@@ -105,6 +150,7 @@ export default class TimerList extends Component<any,any> {
   }
   
 render() {
+  console.log("Next Reset: ",this.state.nextReset)
  return (
   <article id="root">
   <Navbar />
@@ -119,7 +165,7 @@ render() {
     <h2>Required Timers</h2>
     <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
     <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
-    <button onClick={this.handleResetCheck}>Check for Reset Items</button>
+    <button onClick={this.handleReset}>Check for Reset Items</button>
     <button onClick={this.displayAddForm}>Add a timer!</button>
     <div className="flex">
     {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
