@@ -79,24 +79,44 @@ var loadData = new Promise((resolve, reject) => {
   var request = window.indexedDB.open('timers',DB_VER);
   request.onsuccess = (event:any) => {
     let db = request.result;
-    var transaction = db.transaction('timerData', 'readwrite');
+    var transaction = db.transaction('timerData', 'readonly');
 
     var store = transaction.objectStore('timerData');
     let objStoreReq = store.getAll()
     objStoreReq.onsuccess = (event:any) => {
-      console.log("Returning data...")
+      console.log("Load result: " ,event.target.result);
       resolve(event.target.result);
     }
     objStoreReq.onerror = (event:any) => {
-      console.log("Error: ", event.target.error)
+      console.error("Error: ", event.target.error);
       reject(event.target.error);
     }
   }
   request.onerror = (event:any) => {
-    console.log("Unable to retrieve data. Error: ", event.target.error)
+    console.error("Unable to retrieve data. Error: ", event.target.error);
     reject(event.target.error);
   }
 });
+
+function deleteOne(id:any){
+  var request = window.indexedDB.open('timers',DB_VER);
+  request.onsuccess = (event:any) => {
+    let db = request.result;
+    var transaction = db.transaction('timerData', 'readwrite');
+
+    let store = transaction.objectStore('timerData');
+    let objStoreReq = store.delete(id);
+    objStoreReq.onsuccess = (event:any) => {
+      console.log("Item id " + id + " deleted successfully!", event);
+    }
+    objStoreReq.onerror = (event:any) => {
+      console.error("Unable to delete entry. Error: ", event.target.error);
+    }
+  }
+  request.onerror = (event:any) => {
+    console.error("Unable to delete entry. Error: ", event.target.error);
+  }
+}
 
 function filterData(data:TimerType[]):TimerType[]{
   data.forEach(item=>{
@@ -119,4 +139,4 @@ function filterData(data:TimerType[]):TimerType[]{
   return data;
 }
 
-export { initIDB, addOrUpdateMany, addOrUpdateOne, loadData, filterData }
+export { initIDB, addOrUpdateMany, addOrUpdateOne, loadData, filterData, deleteOne }

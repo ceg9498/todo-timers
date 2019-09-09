@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import { setReset, checkResets } from './helpers/Reset'
-import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany } from './data/data'
+import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany, deleteOne } from './data/data'
 import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
 import './App.scss';
@@ -71,6 +71,19 @@ export default class TimerList extends Component<any,any> {
     });
     // re-create timeout based on the new data
     this.createTimeout(data);
+  }
+
+  delete = (id:any) => {
+    deleteOne(id);
+    let data = [];
+    this.state.data.forEach(entry => {
+      if(entry.id !== id){
+        data.push(entry);
+      }
+    });
+    this.setState({
+      data:data
+    });
   }
 
   handleReset = () => {
@@ -171,7 +184,7 @@ render() {
     {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
       return(
         <div key={item.id}>
-          <Timer {...item} handleChange={this.handleChange} />
+          <Timer {...item} handleChange={this.handleChange} delete={this.delete} />
         </div>
       );
     })}

@@ -7,8 +7,9 @@ interface ITimer {
     frequency: string,
     required: boolean,
     completed: Date[],
-    handleChange: any,
+    handleChange: Function,
     isCompleted: boolean,
+    delete: Function
 }
 
 export default class Timer extends Component<ITimer,any> {
@@ -38,6 +39,8 @@ export default class Timer extends Component<ITimer,any> {
                     <span className="date"></span>
                 }
         </label>
+        <span className="edit">Edit</span>
+        <span className="delete" onClick={()=>this.props.delete(this.props.id)}>Delete</span>
       </div>
      );
     }
