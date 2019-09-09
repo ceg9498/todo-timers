@@ -8,6 +8,9 @@ export function setReset(period:String):Date{
     let amount = parseInt(data[1]);
     let unit = data[2]
     switch(unit){
+      case "minutes":
+        result.setMinutes(result.getMinutes() + amount);
+        break;
       case "hours":
         result.setHours(result.getHours() + amount);
         break;
