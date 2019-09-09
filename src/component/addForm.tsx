@@ -129,7 +129,7 @@ export default class AddForm extends React.Component<any,any>{
           onChange={this.handleChange} />
       </label>
       <fieldset>
-        <legend>When should this timer reset?
+        <legend>When should this timer reset?</legend>
           <label>
             <input 
               type="number"
@@ -173,7 +173,6 @@ export default class AddForm extends React.Component<any,any>{
             <input type="checkbox" name="sat" value={this.state.sat}
           onChange={this.handleChange} />
           </label>
-        </legend>
       </fieldset>
       <input type="submit" value="Submit" />
     </form>
