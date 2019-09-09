@@ -84,19 +84,32 @@ export default class TimerList extends Component<any,any> {
   }
 
   addTimer = (data:TimerType) => {
+    let dataArr = this.state.data;
     // add an id to the data
-    //let nID = 0;
+    let nID = 0;
     // check if nID exists in the data already
-    
+    let ids = [];
+    dataArr.forEach(item=>{
+      ids.push(item.id);
+    });
+    while(ids.includes(nID)){
+      nID++;
+      console.log("Testing nID: ", nID)
+    }
+    data.id = nID;
+    addOrUpdateOne(data);
+    dataArr.push(data);
+
     this.setState({
+      data: dataArr,
       displayAddForm: false
-    })
+    });
   }
 
   displayAddForm = () => {
     this.setState({
       displayAddForm: true
-    })
+    });
   }
   
 render() {
