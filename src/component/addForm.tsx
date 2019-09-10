@@ -19,7 +19,7 @@ export default class AddForm extends React.Component<any,any>{
       thu: false,
       fri: false,
       sat: false,
-      unitValue: 0,
+      unitValue: 1,
       unitType: "hours"
     };
   }
@@ -198,6 +198,8 @@ export default class AddForm extends React.Component<any,any>{
             <input 
               type="number"
               name="hour"
+              min="0"
+              max="24"
               value={this.state.hour}
               onChange={this.handleChange} />
           hours </label>:
@@ -205,6 +207,8 @@ export default class AddForm extends React.Component<any,any>{
             <input 
               type="number"
               name="minute"
+              min="0"
+              max="59"
               value={this.state.minute}
               onChange={this.handleChange} />
           minutes</label>
@@ -256,7 +260,8 @@ export default class AddForm extends React.Component<any,any>{
         <label>
           <input 
             type="number" 
-            name="unitValue" 
+            name="unitValue"
+            min="1"
             value={this.state.unitValue}
             onChange={this.handleChange} />
         </label>
