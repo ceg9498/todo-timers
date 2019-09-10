@@ -57,7 +57,7 @@ export default class AddForm extends React.Component<any,any>{
 
     // setState for allDays is slightly more involved
     if(name === "allDays"){
-      console.log("all days toggled")
+      console.log("all days toggled");
       this.setState(()=>{
         return {
           sun: !this.state.sun,
@@ -210,42 +210,42 @@ export default class AddForm extends React.Component<any,any>{
           minutes</label>
           <br/>on<br/>
           <label>
-            <input type="checkbox" name="allDays" value={this.state.allDays}
+            <input type="checkbox" name="allDays" checked={this.state.allDays}
               onChange={this.handleChange} />
             Toggle All Days
           </label><br/>
           <label>
-            <input type="checkbox" name="sun" value={this.state.sun}
+            <input type="checkbox" name="sun" checked={this.state.sun}
               onChange={this.handleChange} />
             Sunday
           </label>
           <label>
-            <input type="checkbox" name="mon" value={this.state.mon}
+            <input type="checkbox" name="mon" checked={this.state.mon}
               onChange={this.handleChange} />
             Monday
           </label>
           <label>
-            <input type="checkbox" name="tue" value={this.state.tue}
+            <input type="checkbox" name="tue" checked={this.state.tue}
               onChange={this.handleChange} />
             Tuesday
           </label>
           <label>
-            <input type="checkbox" name="wed" value={this.state.wed}
+            <input type="checkbox" name="wed" checked={this.state.wed}
               onChange={this.handleChange} />
             Wednesday
           </label>
           <label>
-            <input type="checkbox" name="thu" value={this.state.thu}
+            <input type="checkbox" name="thu" checked={this.state.thu}
               onChange={this.handleChange} />
             Thursday
           </label>
           <label>
-            <input type="checkbox" name="fri" value={this.state.fri}
+            <input type="checkbox" name="fri" checked={this.state.fri}
               onChange={this.handleChange} />
             Friday
           </label>
           <label>
-            <input type="checkbox" name="sat" value={this.state.sat}
+            <input type="checkbox" name="sat" checked={this.state.sat}
               onChange={this.handleChange} />
             Saturday
           </label>
