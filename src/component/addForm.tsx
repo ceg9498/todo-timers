@@ -42,24 +42,16 @@ export default class AddForm extends React.Component<any,any>{
     let value = target.type === "checkbox" ? target.checked : target.value;
 
     // check hour/minute values
-    if(name === "hour"){
-      value = parseInt(value);
-      console.log("Hour value is: ",value)
-      if(value < 0 || value > 24){
-        console.error("Hour value is invalid", value)
-        return
-      } else if(value === undefined){
-        value = 0;
-      }
-    } else if(name === "minute"){
-      value = parseInt(value);
-      console.log("Minute value is: ",value)
-      if(value < 0 || value >= 60){
-        console.error("Minute value is invalid", value)
-        return
-      } else if(value === undefined){
-        value = 0;
-      }
+    switch(name){
+      case "hour":
+        value = this.verifyUnit(parseInt(value),0,24);
+        break;
+      case "minute":
+          value = this.verifyUnit(parseInt(value),0,59);
+        break;
+      case "unitValue":
+          value = this.verifyUnit(parseInt(value),0);
+        break;
     }
 
     // setState for allDays is slightly more involved
@@ -80,6 +72,18 @@ export default class AddForm extends React.Component<any,any>{
     this.setState({
       [name]: value
     });
+  }
+
+  verifyUnit(value:number,min:number,max?:number):number{
+    if(value < min){
+      return min;
+    } else if(value > max){
+      return max;
+    } else if(Number.isNaN(value)){
+      return 0;
+    }
+    console.log("Unit value is: ",value);
+    return value;
   }
 
   intervalPeriod = () => {
