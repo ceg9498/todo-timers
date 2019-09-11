@@ -2,20 +2,14 @@ body {
   --ltblue: hsl(209, 100%, 85%);
   --dkgrey: hsl(206, 9%, 15%);
   --ltgrey: hsl(210, 8%, 95%);
-  background-color: var(--dkgrey);
-  color: var(--ltblue);
-  font-family: sans-serif;
+  color: var(--dkgrey);
+  font-family: Arial, sans-serif;
   font-size: 14px;
   margin: 0px;
 }
 
 * {
   box-sizing: border-box;
-}
-
-article {
-  background-color: var(--dkgrey);
-  background-image: repeating-linear-gradient(hsla(204, 2%, 43%, .1),	hsla(204, 2%, 43%,.1) 1px, transparent 1px, transparent 4px);
 }
 
 section {

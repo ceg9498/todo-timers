@@ -1,6 +1,19 @@
 import React from 'react';
 import { setReset } from '../helpers/Reset'
 
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import { Input } from '@material-ui/core';
+
 export default class AddForm extends React.Component<any,any>{
   constructor(props){
     super(props);
@@ -24,10 +37,9 @@ export default class AddForm extends React.Component<any,any>{
     };
   }
 
-  handleChange = (event:any) => {
+  handleChange = (event:any,name?:string) => {
     const target = event.target;
     let value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
 
     // cleanse hour/minute data
     if(name === "hour" || name === "minute"){
@@ -35,6 +47,7 @@ export default class AddForm extends React.Component<any,any>{
         value = 0;
       }
     }
+    // check hour/minute values
     if(name === "hour"){
       value = parseInt(value);
       console.log("Hour value is: ",value)
@@ -149,135 +162,109 @@ export default class AddForm extends React.Component<any,any>{
 
   render(){
   return(
-    <form onSubmit={this.handleSubmit}>
-      <label>Title:&nbsp;
-        <input 
-          type="text" 
-          name="title"
-          value={this.state.title}
-          onChange={this.handleChange} />
-      </label><br/>
-      <label>
-        <input 
-          type="checkbox"
-          name="required"
-          value={this.state.required}
-          onChange={this.handleChange} />
-        Completion is Important or Required
-      </label><br/>
-      <label>
-        <input 
-          type="checkbox"
-          name="isCompleted"
-          value={this.state.isCompleted}
-          onChange={this.handleChange} />
-        Create as Completed
-      </label><br/>
-      <label>
-        <input
-          type="radio"
-          name="timerType"
-          value="regular"
-          checked={this.state.timerType === "regular"}
-          onChange={this.handleChange} />
-        Regular Timer
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="timerType"
-          value="interval"
-          checked={this.state.timerType === "interval"}
-          onChange={this.handleChange} />
-        Interval Timer
-      </label>
+    <form autoComplete="off">
+      <TextField required
+        id="timer-name"
+        name="title"
+        label="Title"
+        className="textField"
+        margin="normal"
+        onChange={(e)=>this.handleChange(e,"title")} /><br/>
+
+      <FormControlLabel control={
+        <Switch checked={this.state.required} onChange={(e)=>this.handleChange(e,"required")} />
+      } label="Important" /><br/>
+      <FormControlLabel control={
+        <Switch checked={this.state.isCompleted} onChange={(e)=>this.handleChange(e,"isCompleted")} />
+      } label="Create as Completed" /><br/>
+      
+      <FormControl component="fieldset" className="temp">
+        <FormLabel component="legend">Timer Type</FormLabel>
+        <RadioGroup name="timerType" value={this.state.timerType} onChange={(e)=>this.handleChange(e,"timerType")}>
+            <FormControlLabel value="regular" control={<Radio />} label="Regular" />
+            <FormControlLabel value="interval" control={<Radio />} label="Interval" />
+        </RadioGroup>
+      </FormControl>
+
       {this.state.timerType === "regular" ?
-      <fieldset>
-        <legend>When should this timer reset?</legend>
-          <label>
-            <input 
+        <>
+          <FormLabel component="legend">When should this timer reset?</FormLabel>
+
+          <FormControlLabel control={
+            <Input required
+              id="regular-hour"
               type="number"
               name="hour"
-              min="0"
-              max="24"
               value={this.state.hour}
-              onChange={this.handleChange} />
-          hours </label>:
-          <label>
-            <input 
+              onChange={(e)=>this.handleChange(e,"hour")} />
+          } label="hours" />
+          <br/>
+          <FormControlLabel control={
+            <Input required
+              id="regular-minute"
               type="number"
               name="minute"
-              min="0"
-              max="59"
               value={this.state.minute}
-              onChange={this.handleChange} />
-          minutes</label>
-          <br/>on<br/>
-          <label>
-            <input type="checkbox" name="allDays" checked={this.state.allDays}
-              onChange={this.handleChange} />
-            Toggle All Days
-          </label><br/>
-          <label>
-            <input type="checkbox" name="sun" checked={this.state.sun}
-              onChange={this.handleChange} />
-            Sunday
-          </label>
-          <label>
-            <input type="checkbox" name="mon" checked={this.state.mon}
-              onChange={this.handleChange} />
-            Monday
-          </label>
-          <label>
-            <input type="checkbox" name="tue" checked={this.state.tue}
-              onChange={this.handleChange} />
-            Tuesday
-          </label>
-          <label>
-            <input type="checkbox" name="wed" checked={this.state.wed}
-              onChange={this.handleChange} />
-            Wednesday
-          </label>
-          <label>
-            <input type="checkbox" name="thu" checked={this.state.thu}
-              onChange={this.handleChange} />
-            Thursday
-          </label>
-          <label>
-            <input type="checkbox" name="fri" checked={this.state.fri}
-              onChange={this.handleChange} />
-            Friday
-          </label>
-          <label>
-            <input type="checkbox" name="sat" checked={this.state.sat}
-              onChange={this.handleChange} />
-            Saturday
-          </label>
-      </fieldset>
+              onChange={(e)=>this.handleChange(e,"minute")} />
+          } label="minutes" /><br/>
+
+          <FormControlLabel control={
+              <Checkbox checked={this.state.allDays} onChange={(e)=>this.handleChange(e,"allDays")}/>
+          } label="Toggle All Days" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.sun} onChange={(e)=>this.handleChange(e,"sun")}/>
+          } label="Sunday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.mon} onChange={(e)=>this.handleChange(e,"mon")}/>
+          } label="Monday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.tue} onChange={(e)=>this.handleChange(e,"tue")}/>
+          } label="Tuesday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.wed} onChange={(e)=>this.handleChange(e,"wed")}/>
+          } label="Wednesday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.thu} onChange={(e)=>this.handleChange(e,"thu")}/>
+          } label="Thursday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.fri} onChange={(e)=>this.handleChange(e,"fri")}/>
+          } label="Friday" /><br/>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.sat} onChange={(e)=>this.handleChange(e,"sat")}/>
+          } label="Saturday" /><br/>
+      </>
       :
-      <fieldset>
-        <legend>When should this timer reset?</legend>
-        <label>
-          <input 
-            type="number" 
+      <>
+        <FormLabel component="legend">When should this timer reset?</FormLabel>
+        <FormControlLabel control={
+          <Input required
+            id="interval-unit-value"
+            type="number"
             name="unitValue"
-            min="1"
             value={this.state.unitValue}
-            onChange={this.handleChange} />
-        </label>
-        <label>
-          <select
-            name="unitType"
-            value={this.state.unitType}
-            onChange={this.handleChange}>
-            <option value="minutes">minutes</option>
-            <option value="hours">hours</option>
-            <option value="days">days</option>
-          </select>
-        </label>
-      </fieldset>
+            onChange={(e)=>this.handleChange(e,"unitValue")} />
+        } label={this.state.unitType} />
+        
+        <InputLabel htmlFor="unitType">Time Period</InputLabel>
+        <Select
+          native
+          value={this.state.unitType}
+          onChange={(e)=>this.handleChange(e,"unitType")}
+          inputProps={{
+            name: 'period',
+            id: 'interval-period',
+          }}
+        >
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+        </Select>
+      </>
       }
-      <input type="submit" value="Submit" />
+      <br/>
+      <Button variant="contained" onClick={this.handleSubmit}>
+        Submit
+      </Button>
     </form>
   );
 }

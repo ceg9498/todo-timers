@@ -7,6 +7,8 @@ import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
 import './App.scss';
 
+import Button from '@material-ui/core/Button';
+
 export default class TimerList extends Component<any,any> {
   constructor(props){
     super(props);
@@ -178,8 +180,9 @@ render() {
     <h2>Required Timers</h2>
     <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
     <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
-    <button onClick={this.handleReset}>Check for Reset Items</button>
-    <button onClick={this.displayAddForm}>Add a timer!</button>
+    
+    <Button onClick={this.displayAddForm} variant="outlined">Add a timer!</Button>
+    
     <div className="flex">
     {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
       return(
