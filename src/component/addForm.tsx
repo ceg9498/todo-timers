@@ -41,12 +41,6 @@ export default class AddForm extends React.Component<any,any>{
     const target = event.target;
     let value = target.type === "checkbox" ? target.checked : target.value;
 
-    // cleanse hour/minute data
-    if(name === "hour" || name === "minute"){
-      if(typeof value !== "number"){
-        value = 0;
-      }
-    }
     // check hour/minute values
     if(name === "hour"){
       value = parseInt(value);
