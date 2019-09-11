@@ -50,7 +50,7 @@ export default class AddForm extends React.Component<any,any>{
           value = this.verifyUnit(parseInt(value),0,59);
         break;
       case "unitValue":
-          value = this.verifyUnit(parseInt(value),0);
+          value = this.verifyUnit(parseInt(value),1);
         break;
     }
 
@@ -80,7 +80,7 @@ export default class AddForm extends React.Component<any,any>{
     } else if(value > max){
       return max;
     } else if(Number.isNaN(value)){
-      return 0;
+      return min;
     }
     console.log("Unit value is: ",value);
     return value;
