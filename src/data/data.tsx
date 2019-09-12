@@ -7,6 +7,7 @@ var initIDB = new Promise((resolve,reject)=> {
   // dbName will be the DB name, storeName will be the store name.
   if(!('indexedDB' in window)){
     console.log("This browser doesn't support IndexedDB");
+    /* TODO: change the console.log into a user-friendly message */
     return;
   }
   // create or open IndexedDB
@@ -20,7 +21,6 @@ var initIDB = new Promise((resolve,reject)=> {
 
   // handle db upgrades
   request.onupgradeneeded = function(event:any) {
-    console.log("Upgrading db...");
     // save the IDBDatabase interface
     var db = event.target.result;
     // Create an objectStore for the database
@@ -40,7 +40,6 @@ var initIDB = new Promise((resolve,reject)=> {
 
 function addOrUpdateMany(items:Array<TimerType>) {
   var request = window.indexedDB.open('timers',DB_VER);
-  console.log("Attempting to add many...");
   request.onsuccess = (event:any) => {
     let db = request.result;
     var transaction = db.transaction('timerData', 'readwrite');
@@ -50,8 +49,11 @@ function addOrUpdateMany(items:Array<TimerType>) {
     items.forEach(item => 
       objStoreReq = store.put(item)
     );
-    objStoreReq.onsuccess = function(event) {
-      console.log('[Transaction] ALL DONE!');
+    transaction.oncomplete = function(event) {
+      console.log('Item(s) successfully stored.');
+    };
+    objStoreReq.onerror = function(event) {
+      console.log("Error storing items: ",event.target.error);
     };
   }
   request.onerror = (event:any) => {
