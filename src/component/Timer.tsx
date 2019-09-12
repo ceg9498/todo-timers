@@ -1,17 +1,13 @@
-import React, { Component } from 'react'
-import './timer.scss'
+import React, { Component } from 'react';
+import { TimerType } from '../data/schema';
+import './timer.scss';
 
 import Icon from '@material-ui/core/Icon';
 import { Typography } from '@material-ui/core';
 
 interface ITimer {
-    id: number,
-    title: string,
-    frequency: string,
-    required: boolean,
-    completed: Date[],
+    data: TimerType,
     handleChange: Function,
-    isCompleted: boolean,
     delete: Function
 }
 
@@ -27,36 +23,40 @@ export default class Timer extends Component<ITimer,any> {
     }
     
     render(){
+        let timer = this.props.data;
         let timerCard;
-        if(this.props.isCompleted){
+        if(!timer){
+            return(<></>);
+        }
+        if(timer.isCompleted){
             timerCard = this.checkedCard;
         }
-     return(
+    return(
       <div className="timerCard" style={timerCard}>
           <div className="timerCardGrid">
         <input
             type="checkbox" 
             name="isCompleted" 
-            id={this.props.title}
-            checked={this.props.isCompleted} 
-            onChange={e => (this.props.handleChange(e, this.props.id))} />
+            id={timer.title}
+            checked={timer.isCompleted} 
+            onChange={e => (this.props.handleChange(e, timer.id))} />
             <div className="pad"></div>
-        <label htmlFor={this.props.title} className="timerTile">
-            {this.props.required && 
+        <label htmlFor={timer.title} className="timerTile">
+            {timer.required && 
             	<span className="reqSym">&#x203C;&#xFE0F;</span>
             }
-            <span>{this.props.title}</span><br/>
+            <span>{timer.title}</span><br/>
             
-                {this.props.completed.length > 0 ?
-                    <span className="date">Last completed: {this.props.completed[this.props.completed.length-1].toDateString()}</span>
+                {timer.completed.length > 0 ?
+                    <span className="date">Last completed: {timer.completed[timer.completed.length-1].toDateString()}</span>
                 :
                     <span className="date"></span>
                 }
         </label>
         <Icon className="edit">edit</Icon>
-        <Typography variant="srOnly">Edit {this.props.title}</Typography>
-        <Icon className="delete" onClick={()=>this.props.delete(this.props.id)}>delete_forever</Icon>
-        <Typography variant="srOnly">Delete {this.props.title} timer</Typography>
+        <Typography variant="srOnly">Edit {timer.title}</Typography>
+        <Icon className="delete" onClick={()=>this.props.delete(timer.id)}>delete_forever</Icon>
+        <Typography variant="srOnly">Delete {timer.title} timer</Typography>
       </div></div>
      );
     }

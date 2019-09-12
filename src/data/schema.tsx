@@ -1,11 +1,11 @@
 export type TimerType = {
-  id: Number,
-  title: String,
+  id: number,
+  title: string,
   resetTime: Date,
-  required: Boolean,
+  required: boolean,
   completed: Date[],
-  isCompleted: Boolean,
-  period: String,
+  isCompleted: boolean,
+  period: string
 }
 /*
   period shoud be set to:
