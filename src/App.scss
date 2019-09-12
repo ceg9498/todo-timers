@@ -13,15 +13,48 @@ body {
 }
 
 section {
-  min-height: 100vh;
-  width: 99%;
-  margin: 0px auto;
-  padding: 30px 10px 10px 10px;
+  margin-top: 50px;
+  padding-left: 30px;
 }
 
-#addTimer {
-  margin: 50px;
-  min-height: auto;
+.basic-info {
+  grid-area: basic-info;
+  display: grid;
+  grid-template:
+    "timer-name timer-name"
+    "important timer-type"
+    "completed timer-type";
+  grid-template-columns: 250px 100px;
+
+  .timer-name-field {
+    margin-bottom: 16px;
+    grid-area: timer-name;
+  }
+  .important-field {
+    margin-top: 15px;
+    grid-area: important;
+  }
+  .completed-field {
+    grid-area: completed;
+  }
+  .timer-type-field {
+    grid-area: timer-type;
+  }
+}
+.specific-info {
+  margin-top: 20px;
+  grid-area: specific-info;
+}
+.time-input {
+  margin-left: 11px;
+}
+.days-input {
+  margin-left: 30px;
+  display: grid;
+  grid-template:
+    ". . . . ."
+    ". . . . .";
+  grid-template-columns: 130px 130px 130px 130px 130px;
 }
 
 fieldset {
@@ -29,7 +62,7 @@ fieldset {
 }
 
 input[type="number"]{
-  width: 4em;
+  width: 50px;
 }
 
 .flex {

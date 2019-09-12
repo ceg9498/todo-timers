@@ -225,22 +225,24 @@ export default class AddForm extends React.Component<any,any>{
   render(){
   return(
     <form autoComplete="off">
+      <h2>Create a Timer</h2>
+      <div className="basic-info">
       <TextField required
         id="timer-name"
         name="title"
         label="Title"
-        className="textField"
+        className="timer-name-field"
         margin="normal"
-        onChange={(e)=>this.handleChange(e,"title")} /><br/>
+        onChange={(e)=>this.handleChange(e,"title")} />
 
       <FormControlLabel control={
         <Switch checked={this.state.required} onChange={(e)=>this.handleChange(e,"required")} />
-      } label="Important" /><br/>
+      } label="Important" className="important-field" />
       <FormControlLabel control={
         <Switch checked={this.state.isCompleted} onChange={(e)=>this.handleChange(e,"isCompleted")} />
-      } label="Create as Completed" /><br/>
+      } label="Create as Completed" className="completed-field" />
       
-      <FormControl component="fieldset" className="temp">
+      <FormControl component="fieldset" className="timer-type-field">
         <FormLabel component="legend">Timer Type</FormLabel>
         <RadioGroup name="timerType" value={this.state.timerType} onChange={(e)=>this.handleChange(e,"timerType")}>
             <FormControlLabel value="regular" control={<Radio />} label="Regular" />
@@ -248,10 +250,13 @@ export default class AddForm extends React.Component<any,any>{
         </RadioGroup>
       </FormControl>
 
+      </div>
+      <div className="specific-info">
       {this.state.timerType === "regular" ?
         <>
           <FormLabel component="legend">When should this timer reset?</FormLabel>
 
+          <div className="time-input">
           <FormControlLabel control={
             <Input required
               id="regular-hour"
@@ -259,8 +264,7 @@ export default class AddForm extends React.Component<any,any>{
               name="hour"
               value={this.state.hour}
               onChange={(e)=>this.handleChange(e,"hour")} />
-          } label="hours" />
-          <br/>
+          } label="&nbsp;hour" />and&nbsp;&nbsp;&nbsp;&nbsp;
           <FormControlLabel control={
             <Input required
               id="regular-minute"
@@ -268,7 +272,8 @@ export default class AddForm extends React.Component<any,any>{
               name="minute"
               value={this.state.minute}
               onChange={(e)=>this.handleChange(e,"minute")} />
-          } label="minutes" /><br/>
+          } label="&nbsp;minutes" />
+          </div>
 
           <FormControlLabel control={this.state.partialDays ?
             <Checkbox 
@@ -279,28 +284,30 @@ export default class AddForm extends React.Component<any,any>{
             <Checkbox 
               checked={this.state.allDays} 
               onChange={(e)=>this.handleChange(e,"allDays")}/>
-          } label="Toggle All Days" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.sun} onChange={(e)=>this.handleChange(e,"sun")}/>
-          } label="Sunday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.mon} onChange={(e)=>this.handleChange(e,"mon")}/>
-          } label="Monday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.tue} onChange={(e)=>this.handleChange(e,"tue")}/>
-          } label="Tuesday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.wed} onChange={(e)=>this.handleChange(e,"wed")}/>
-          } label="Wednesday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.thu} onChange={(e)=>this.handleChange(e,"thu")}/>
-          } label="Thursday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.fri} onChange={(e)=>this.handleChange(e,"fri")}/>
-          } label="Friday" /><br/>
-          <FormControlLabel control={
-              <Checkbox checked={this.state.days.sat} onChange={(e)=>this.handleChange(e,"sat")}/>
-          } label="Saturday" /><br/>
+          } label="Toggle All Days" />
+          <div className="days-input">
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.mon} onChange={(e)=>this.handleChange(e,"mon")}/>
+            } label="Monday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.tue} onChange={(e)=>this.handleChange(e,"tue")}/>
+            } label="Tuesday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.wed} onChange={(e)=>this.handleChange(e,"wed")}/>
+            } label="Wednesday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.thu} onChange={(e)=>this.handleChange(e,"thu")}/>
+            } label="Thursday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.fri} onChange={(e)=>this.handleChange(e,"fri")}/>
+            } label="Friday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.sat} onChange={(e)=>this.handleChange(e,"sat")}/>
+            } label="Saturday" />
+            <FormControlLabel control={
+                <Checkbox checked={this.state.days.sun} onChange={(e)=>this.handleChange(e,"sun")}/>
+            } label="Sunday" />
+          </div>
       </>
       :
       <>
@@ -311,7 +318,7 @@ export default class AddForm extends React.Component<any,any>{
             type="number"
             name="unitValue"
             value={this.state.unitValue}
-            onChange={(e)=>this.handleChange(e,"unitValue")} />
+            onChange={(e)=>this.handleChange(e,"unitValue")} className="time-input" />
         } label={this.state.unitType} />
         
         <InputLabel htmlFor="unitType">Time Period</InputLabel>
@@ -330,6 +337,7 @@ export default class AddForm extends React.Component<any,any>{
         </Select>
       </>
       }
+      </div>
       <br/>
       <Button variant="contained" onClick={this.handleSubmit}>
         Submit
