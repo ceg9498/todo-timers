@@ -22,8 +22,18 @@ export function setReset(period:String):Date{
     }
   } else if(data[0] === 'r'){
     // for "regular" type timers
-    // indexes: 1, 2, 3, 5 are currently unused
+    // indexes: 1, 2, 3 are currently unused
+    /* 
+      0: 'r'
+      1: year
+      2: month
+      3: day of month
+      4: hours
+      5: minutes
+      6: days of week
+    */
     let hours = parseInt(data[4]);
+    let minutes = parseInt(data[5]);
     let dayStrings = data[6].split('');
     let daysofweek = dayStrings.map(str=>{
       return parseInt(str);
@@ -73,7 +83,7 @@ export function setReset(period:String):Date{
       }
     }
     result.setHours(hours);
-    result.setMinutes(0);
+    result.setMinutes(minutes);
     result.setSeconds(0);
     result.setMilliseconds(0);
   }
