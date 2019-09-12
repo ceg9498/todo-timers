@@ -25,13 +25,16 @@ export default class AddForm extends React.Component<any,any>{
       hour: 11,
       minute: 0,
       allDays: false,
-      sun: false,
-      mon: false,
-      tue: false,
-      wed: false,
-      thu: false,
-      fri: false,
-      sat: false,
+      partialDays: false,
+      days: {
+        sun: false,
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+        sat: false
+      },
       unitValue: 1,
       unitType: "hours"
     };
@@ -54,24 +57,23 @@ export default class AddForm extends React.Component<any,any>{
         break;
     }
 
-    // setState for allDays is slightly more involved
-    if(name === "allDays"){
-      console.log("all days toggled");
-      this.setState(()=>{
-        return {
-          sun: !this.state.sun,
-          mon: !this.state.mon,
-          tue: !this.state.tue,
-          wed: !this.state.wed,
-          thu: !this.state.thu,
-          fri: !this.state.fri,
-          sat: !this.state.sat
-        }}
-      );
+    // setState for certain items is more involved
+    switch(name){
+      case "allDays":
+      case "sun":
+      case "mon":
+      case "tue":
+      case "wed":
+      case "thu":
+      case "fri":
+      case "sat":
+        this.checkDaysState(name, value);
+        break;
+      default:
+        this.setState({
+          [name]: value
+        });
     }
-    this.setState({
-      [name]: value
-    });
   }
 
   verifyUnit(value:number,min:number,max?:number):number{
@@ -84,6 +86,68 @@ export default class AddForm extends React.Component<any,any>{
     }
     console.log("Unit value is: ",value);
     return value;
+  }
+
+  checkDaysState = (name, value) => {
+    let daysObj = this.state.days;
+    let valuesArr = [];
+    if(name === "allDays"){
+      console.log("all days toggled");
+      // for "allDays":
+      // flip each day's value (true/false)
+      daysObj = {
+        sun:!daysObj.sun,
+        mon:!daysObj.mon,
+        tue:!daysObj.tue,
+        wed:!daysObj.wed,
+        thu:!daysObj.thu,
+        fri:!daysObj.fri,
+        sat:!daysObj.sat
+      }
+    } else {
+      // otherwise it will be an individual day, so set that to the "value"
+      daysObj[name] = value;
+    }
+    // next, create an array out of the object
+    // this allows easy checking for partial
+    valuesArr = [
+      daysObj.sun,
+      daysObj.mon,
+      daysObj.tue,
+      daysObj.wed,
+      daysObj.thu,
+      daysObj.fri,
+      daysObj.sat
+    ];
+
+    console.log(valuesArr);
+    
+    // check if days are all true (none are false)
+    if(!valuesArr.includes(false)){
+      // then set allDays to true-determinate
+      this.setState({
+        days:daysObj,
+        allDays:true,
+        partialDays:false
+      });
+    }
+    // check if days are all false (none are true)
+    else if(!valuesArr.includes(true)){
+      // then set allDays to false-determinate
+      this.setState({
+        days:daysObj,
+        allDays:false,
+        partialDays:false
+      });
+    }
+    // otherwise, set allDays to true-indeterminate
+    else {
+      this.setState({
+        days:daysObj,
+        allDays:true,
+        partialDays:true
+      });
+    }
   }
 
   intervalPeriod = () => {
@@ -206,29 +270,36 @@ export default class AddForm extends React.Component<any,any>{
               onChange={(e)=>this.handleChange(e,"minute")} />
           } label="minutes" /><br/>
 
-          <FormControlLabel control={
-              <Checkbox checked={this.state.allDays} onChange={(e)=>this.handleChange(e,"allDays")}/>
+          <FormControlLabel control={this.state.partialDays ?
+            <Checkbox 
+              indeterminate
+              checked={this.state.allDays} 
+              onChange={(e)=>this.handleChange(e,"allDays")}/>
+          :
+            <Checkbox 
+              checked={this.state.allDays} 
+              onChange={(e)=>this.handleChange(e,"allDays")}/>
           } label="Toggle All Days" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.sun} onChange={(e)=>this.handleChange(e,"sun")}/>
+              <Checkbox checked={this.state.days.sun} onChange={(e)=>this.handleChange(e,"sun")}/>
           } label="Sunday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.mon} onChange={(e)=>this.handleChange(e,"mon")}/>
+              <Checkbox checked={this.state.days.mon} onChange={(e)=>this.handleChange(e,"mon")}/>
           } label="Monday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.tue} onChange={(e)=>this.handleChange(e,"tue")}/>
+              <Checkbox checked={this.state.days.tue} onChange={(e)=>this.handleChange(e,"tue")}/>
           } label="Tuesday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.wed} onChange={(e)=>this.handleChange(e,"wed")}/>
+              <Checkbox checked={this.state.days.wed} onChange={(e)=>this.handleChange(e,"wed")}/>
           } label="Wednesday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.thu} onChange={(e)=>this.handleChange(e,"thu")}/>
+              <Checkbox checked={this.state.days.thu} onChange={(e)=>this.handleChange(e,"thu")}/>
           } label="Thursday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.fri} onChange={(e)=>this.handleChange(e,"fri")}/>
+              <Checkbox checked={this.state.days.fri} onChange={(e)=>this.handleChange(e,"fri")}/>
           } label="Friday" /><br/>
           <FormControlLabel control={
-              <Checkbox checked={this.state.sat} onChange={(e)=>this.handleChange(e,"sat")}/>
+              <Checkbox checked={this.state.days.sat} onChange={(e)=>this.handleChange(e,"sat")}/>
           } label="Saturday" /><br/>
       </>
       :
