@@ -165,46 +165,12 @@ export default class TimerList extends Component<any,any> {
       displayAddForm: true
     });
   }
-  
-/* the following TabPanels are where the content is displayed!
-<TabPanel value={value} index={0}>
-    Item One
-</TabPanel>
-<TabPanel value={value} index={1}>
-    Item Two
-</TabPanel>
-<TabPanel value={value} index={2}>
-    Item Three
-</TabPanel>
 
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      <Box p={3}>{children}</Box>
-    </Typography>
-  );
-}
-*/
-
-/*
-  "Timers" = 0
-  "Add Timer" = 1
-*/
-handleTabChange = (event:any,newValue:number) => {
-  this.setState({
-    section:newValue
-  });
-}
+  handleTabChange = (event:any,newValue:number) => {
+    this.setState({
+      section:newValue
+    });
+  }
 
 render() {
   console.log("Next Reset: ",this.state.nextReset)
