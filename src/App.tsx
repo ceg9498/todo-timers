@@ -7,7 +7,8 @@ import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
 import './App.scss';
 
-import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+//import Button from '@material-ui/core/Button';
 
 export default class TimerList extends Component<any,any> {
   constructor(props){
@@ -16,7 +17,8 @@ export default class TimerList extends Component<any,any> {
       data:[],
       nextReset: null,
       timeout: null,
-      displayAddForm: false
+      displayAddForm: false,
+      section:0
     };
   }
 
@@ -164,75 +166,146 @@ export default class TimerList extends Component<any,any> {
     });
   }
   
+/* the following TabPanels are where the content is displayed!
+<TabPanel value={value} index={0}>
+    Item One
+</TabPanel>
+<TabPanel value={value} index={1}>
+    Item Two
+</TabPanel>
+<TabPanel value={value} index={2}>
+    Item Three
+</TabPanel>
+
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      <Box p={3}>{children}</Box>
+    </Typography>
+  );
+}
+*/
+
+/*
+  "Timers" = 0
+  "Add Timer" = 1
+*/
+handleTabChange = (event:any,newValue:number) => {
+  this.setState({
+    section:newValue
+  });
+}
+
 render() {
   console.log("Next Reset: ",this.state.nextReset)
  return (
   <article id="root">
-  <Navbar />
+    <Navbar value={this.state.section} handleTabChange={this.handleTabChange} />
 
-  {this.state.displayAddForm &&
-    <section id="addTimer">
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 0}
+      id="top">
+      <h2>All Timers</h2>
+      <p>This will be all timers</p>
+      <ListTimers 
+        filtered={this.state.data} 
+        handleChange={this.handleChange}
+        deleteItem={this.delete} />
+    </Typography>
+
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 1}
+      id="top">
+      <h2>Required Timers</h2>
+      <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
+      <ListTimers 
+        filtered={this.state.data.filter(item=>(item.required === true))} 
+        handleChange={this.handleChange}
+        deleteItem={this.delete} />
+    </Typography>
+
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 2}
+      id="day">
+      <h2>Daily Timers</h2>
+      <p>This will be all timers that reset each day</p>
+      <ListTimers 
+        filtered={this.state.data.filter(item=>(item.period[0] === 'r'))} 
+        handleChange={this.handleChange}
+        deleteItem={this.delete} />
+    </Typography>
+
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 3}
+      id="week">
+      <h2>Weekly Timers</h2>
+      <p>This will be all timers that reset each week</p>
+      <ListTimers 
+        filtered={this.state.data.filter(item=>(item.period[0] === 'r'))} 
+        handleChange={this.handleChange}
+        deleteItem={this.delete} />
+    </Typography>
+    
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 4}
+      id="other">
+      <h2>Other Timers</h2>
+      <p>This will be all timers that reset at a custom interval</p>
+      <ListTimers 
+        filtered={this.state.data.filter(item=>(item.period[0] === 'i'))} 
+        handleChange={this.handleChange}
+        deleteItem={this.delete} />
+    </Typography>
+    
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 5}
+      id="addTimer">
       <AddForm addTimer={this.addTimer} />
-    </section>
-  }
-
-  <section id="top">
-    <h2>Required Timers</h2>
-    <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
-    <p>For now, simply a testing sandbox area so I don't have to scroll/click a lot.</p>
-    
-    <Button onClick={this.displayAddForm} variant="outlined">Add a timer!</Button>
-    
-    <div className="flex">
-    {this.state.data/*.filter(item => item.required===true)*/.map((item) => {
-      return(
-        <div key={item.id}>
-          <Timer {...item} handleChange={this.handleChange} delete={this.delete} />
-        </div>
-      );
-    })}
-    </div>
-  </section>
-  <section id="day">
-   <h2>Daily Timers</h2>
-   <p>This will be all timers that reset each day</p>
-   <div className="flex">
-   {this.state.data.filter(item=>item.frequency === "day").map((item,index) => {
-     return(
-      <div key={index}>
-        <Timer index={index} {...item} handleChange={this.handleChange} />
-      </div>
-    );
-    })}
-  </div>
-  </section>
-  <section id="week">
-  <h2>Weekly Timers</h2>
-  <p>This will be all timers that reset each week</p>
-  <div className="flex">
-  {this.state.data.filter(item=>item.frequency === "week").map((item,index) => {
-    return(
-      <div key={index}>
-        <Timer index={index} {...item} handleChange={this.handleChange} />
-      </div>
-    );
-   })}
-  </div>
-  </section>
-  <section id="other">
-   <h2>Other Timers</h2>
-   <p>This will be all timers that reset at a custom interval</p>
-   <div className="flex">
-   {this.state.data.filter(item=>(item.frequency !== "day" && item.frequency !== "week")).map((item,index) => {
-     return(
-      <div key={index}>
-        <Timer index={index} {...item} handleChange={this.handleChange} />
-      </div>
-    );
-   })}
-  </div>
-  </section>
+    </Typography>
   </article>
  );
 }
+}
+
+interface ITimerList {
+  filtered:Array<TimerType>,
+  handleChange:Function,
+  deleteItem:Function
+}
+
+function ListTimers(props:ITimerList){
+  let { filtered, handleChange, deleteItem } = props;
+  return(
+    <div className="flex">
+      {filtered.map((item) => {
+        return(
+         <div key={item.id}>
+           <Timer data={item} handleChange={handleChange} delete={deleteItem} />
+         </div>
+       );
+      })}
+    </div>
+  );
 }

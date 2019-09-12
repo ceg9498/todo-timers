@@ -1,20 +1,21 @@
 import React from 'react'
 import './navbar.scss'
 
-export default function Navbar(){
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
+export default function Navbar(props){
     return (
-        <nav id="navbar">
-            <ul role="navigation">
-            <li>
-            <a href="#top" id="a-top">XIV Timers</a>
-            </li><li>
-            <a href="#day">Daily</a>
-            </li><li>
-            <a href="#week">Weekly</a>
-            </li><li>
-            <a href="#other">Other</a>
-            </li>
-            </ul>
-        </nav>
+        <AppBar position="static">
+            <Tabs value={props.value} onChange={props.handleTabChange} role="navigation">
+                <Tab label="All Timers" id="a-top" />
+                <Tab label="Required" />
+                <Tab label="Daily" />
+                <Tab label="Weekly" />
+                <Tab label="Other" />
+                <Tab label="Add Timer" />
+            </Tabs>
+        </AppBar>
    );
 }
