@@ -8,7 +8,7 @@ import AddForm from './component/addForm'
 import './App.scss';
 
 import Typography from '@material-ui/core/Typography';
-//import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 
 export default class TimerList extends Component<any,any> {
   constructor(props){
@@ -18,7 +18,11 @@ export default class TimerList extends Component<any,any> {
       nextReset: null,
       timeout: null,
       displayAddForm: false,
-      section:0
+      section:0,
+      snack: {
+        isOpen:false,
+        message:""
+      }
     };
   }
 
@@ -91,18 +95,38 @@ export default class TimerList extends Component<any,any> {
   }
 
   handleReset = () => {
+    let hasReset = 0;
     let data = this.state.data;
     data.forEach(item => {
       if(item.isCompleted === true && checkResets(item.resetTime)){
         item.resetTime = null;
         item.isCompleted = false;
+        hasReset++;
       }
     });
-    addOrUpdateMany(data);
-    this.createTimeout(data);
-    this.setState({
-      data: data
-    });
+    if(hasReset > 0){
+      addOrUpdateMany(data);
+      this.createTimeout(data);
+      this.setState({
+        data: data
+      });
+      if(hasReset === 1){
+        this.setState({
+          snack:{
+            isOpen:true,
+            message:"A timer has reset"
+          }
+        });
+      } else {
+        let msg = hasReset + " timers have reset";
+        this.setState({
+          snack:{
+            isOpen:true,
+            message:msg
+          }
+        });
+      }
+    }
   }
 
   createTimeout = (data?:TimerType[]) => {
@@ -250,6 +274,8 @@ render() {
       id="addTimer">
       <AddForm addTimer={this.addTimer} />
     </Typography>
+
+    <DisplaySnack isSnackOpen={this.state.snack.isOpen} message={this.state.snack.message} />
   </article>
  );
 }
@@ -273,5 +299,27 @@ function ListTimers(props:ITimerList){
        );
       })}
     </div>
+  );
+}
+
+interface ISnack {
+  isSnackOpen:boolean,
+  message:string
+}
+function DisplaySnack(props:ISnack){
+  let { isSnackOpen, message } = props;
+  return(
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      open={isSnackOpen}
+      autoHideDuration={6000}
+      ContentProps={{
+        'aria-describedby': 'message-id'
+      }}
+      message={<span id="message-id">{message}</span>}
+    />
   );
 }
