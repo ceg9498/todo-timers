@@ -14,6 +14,14 @@ import './App.scss';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 
+/* Imports used for Slim UI's Info Dialog */
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+
 export default class TimerList extends Component<any,any> {
   constructor(props){
     super(props);
@@ -29,6 +37,10 @@ export default class TimerList extends Component<any,any> {
       },
       options: {
         hideCompleted: false,
+      },
+      dialog: {
+        isOpen:false,
+        id:null
       }
     };
   }
@@ -219,6 +231,14 @@ export default class TimerList extends Component<any,any> {
     });
   };
 
+  closeDialog = (
+    event:React.SyntheticEvent|React.MouseEvent,
+    reason?:string) => {
+    this.setState({
+      isDialogOpen:false
+    });
+  }
+
   setOptions = (event:any,name:string) => {
     let value = event.target.type === 'checkbox' ? 
       event.target.checked : 
@@ -312,6 +332,12 @@ export default class TimerList extends Component<any,any> {
           <Options setOptions={this.setOptions} optionsState={this.state.options} />
         </Typography>
 
+        <DisplayDialog
+          closeDialog={this.closeDialog}
+          isOpen={this.state.dialog.isOpen}
+          deleteTimer={this.state.delete}
+          timer={this.state.data[this.state.dialog.id]} />
+
         <DisplaySnack 
           isSnackOpen={this.state.snack.isOpen} 
           message={this.state.snack.message}
@@ -339,6 +365,45 @@ function ListTimers(props:ITimerList){
        );
       })}
     </div>
+  );
+}
+
+interface IDialog {
+  closeDialog:any,
+  isOpen:boolean,
+  deleteTimer:any,
+  editTimer?:any,
+  timer:TimerType
+}
+
+function DisplayDialog(props:IDialog){
+  if(props.timer === undefined){
+    return(<></>);
+  }
+  let { closeDialog, isOpen, timer, deleteTimer } = props;
+  return(
+    <Dialog 
+      onClose={closeDialog}
+      aria-labelledby="dialog-title"
+      open={isOpen}>
+        <DialogTitle id="dialog-title">
+          {timer.title}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {/* Timer description will go here */}
+          </DialogContentText>
+          <DialogContentText>
+            Last completion:
+            {timer.completed[timer.completed.length-1].toLocaleString()}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteTimer}>
+            Delete
+          </Button>
+        </DialogActions>
+    </Dialog>
   );
 }
 
