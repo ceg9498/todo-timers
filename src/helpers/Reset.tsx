@@ -1,7 +1,7 @@
 const DAYS_IN_WEEK = 7;
 
 export function setReset(period:String):Date{
-  let data = period.split('-');
+  let data = period.split('.');
   let result = new Date();
   // for "interval" type timers
   if(data[0] === 'i'){
@@ -20,11 +20,16 @@ export function setReset(period:String):Date{
       default:
         console.error("ERROR: interval unit not recognized.");
     }
-  } else if(data[0] === 'r'){
+  } else if(data[0][0] === 'r'){
     // for "regular" type timers
+    // data[0][1] is 'l' for local time or 'g' for global(UTC) time
+    let useUTC = false;
+    if(data[0][1] === 'g'){
+      useUTC = true;
+    }
     // indexes: 1, 2, 3 are currently unused
     /* 
-      0: 'r'
+      0: 'r(g/l)'
       1: year
       2: month
       3: day of month
@@ -39,6 +44,7 @@ export function setReset(period:String):Date{
       return parseInt(str);
     });
 
+    // this logic block is specifically for Days of Week
     if(daysofweek.length === 1){
       if(daysofweek[0] === result.getDay()){
         // if current day is the same as the intended reset day, check hours
@@ -81,9 +87,15 @@ export function setReset(period:String):Date{
         distance %= 7;
         result.setDate(result.getDate() + distance);
       }
+    } // end Days of Week logic block
+
+    if(useUTC){
+      result.setUTCHours(hours);
+      result.setUTCMinutes(minutes);
+    } else {
+      result.setHours(hours);
+      result.setMinutes(minutes);
     }
-    result.setHours(hours);
-    result.setMinutes(minutes);
     result.setSeconds(0);
     result.setMilliseconds(0);
   }

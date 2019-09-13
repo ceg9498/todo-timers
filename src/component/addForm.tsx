@@ -22,6 +22,7 @@ export default class AddForm extends React.Component<any,any>{
       required: false,
       isCompleted: false,
       timerType: "regular",
+      useGlobalTime: true,
       hour: 11,
       minute: 0,
       allDays: false,
@@ -172,17 +173,28 @@ export default class AddForm extends React.Component<any,any>{
   };
 
   intervalPeriod = () => {
-    let period = 'i-';
-    period += this.state.unitValue + '-';
+    let period = 'i.';
+    period += this.state.unitValue + '.';
     period += this.state.unitType;
     return period;
   };
 
   regularPeriod = () => {
-    let period = 'r-0000-00-00-';
-    period += this.state.hour + '-';
-    period += this.state.minute + '-';
+    let period = '';
+    if(this.state.useGlobalTime){
+      period = 'rg.0000.00.00.';
+      let offsetTotal = (new Date()).getTimezoneOffset();
+      let offsetHours = Math.floor(offsetTotal/60);
+      let offsetMinutes = offsetTotal-(offsetHours*60);
+      period += (this.state.hour+offsetHours) + '.';
+      period += (this.state.minute+offsetMinutes) + '.';
+    } else {
+      period = 'rl.0000.00.00.';
+      period += this.state.hour + '.';
+      period += this.state.minute + '.';
+    }
     period += this.calculateDayOfWeek();
+    console.log(period);
     return period;
   };
 
@@ -294,6 +306,10 @@ export default class AddForm extends React.Component<any,any>{
                     onChange={(e)=>this.handleChange(e,"minute")} />
                 } label="&nbsp;minutes" />
               </div>
+
+              <FormControlLabel control={
+                <Switch checked={this.state.useGlobalTime} onChange={(e)=>this.handleChange(e,"useGlobalTime")} />
+              } label="Use Global Time" /><br/>
 
               <FormControlLabel control=
                 {this.state.partialDays ?

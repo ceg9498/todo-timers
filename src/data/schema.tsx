@@ -12,8 +12,9 @@ export type TimerType = {
 
   i-XX-unit:
     interval XX weeks / interval XX hours
-  r-yyyy-mm-dd-hh-mm-#dow: 
-    regular year-month-day-hour-minute-# day of week
+  rx-yyyy-mm-dd-hh-mm-#dow: 
+    regular(local/global)-year-month-day-hour-minute-# day of week
+    where x is 'l' or 'g'
 
   these strings will be parsed out for dynamic resets
   year/month are not planned to be used right now, but there in case I do decide to use them
