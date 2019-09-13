@@ -270,8 +270,8 @@ export default class AddForm extends React.Component<any,any>{
       <FormControl component="fieldset" className="timer-type-field">
         <FormLabel component="legend">Timer Type</FormLabel>
         <RadioGroup name="timerType" value={this.state.timerType} onChange={(e)=>this.handleChange(e,"timerType")}>
-            <FormControlLabel value="regular" control={<Radio />} label="Regular" />
-            <FormControlLabel value="interval" control={<Radio />} label="Interval" />
+            <FormControlLabel value="regular" control={<Radio />} label="Scheduled" />
+            <FormControlLabel value="interval" control={<Radio />} label="Repeating" />
         </RadioGroup>
       </FormControl>
 

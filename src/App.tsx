@@ -248,22 +248,9 @@ render() {
       component="section"
       role="tabpanel"
       hidden={this.state.section !== 2}
-      id="day">
-      <h2>Daily Timers</h2>
+      id="scheduled">
+      <h2>Scheduled</h2>
       <p>This will be all timers that reset each day</p>
-      <ListTimers 
-        filtered={this.state.data.filter(item=>(item.period[0] === 'r'))} 
-        handleChange={this.handleChange}
-        deleteItem={this.delete} />
-    </Typography>
-
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 3}
-      id="week">
-      <h2>Weekly Timers</h2>
-      <p>This will be all timers that reset each week</p>
       <ListTimers 
         filtered={this.state.data.filter(item=>(item.period[0] === 'r'))} 
         handleChange={this.handleChange}
@@ -273,9 +260,9 @@ render() {
     <Typography
       component="section"
       role="tabpanel"
-      hidden={this.state.section !== 4}
-      id="other">
-      <h2>Other Timers</h2>
+      hidden={this.state.section !== 3}
+      id="repeating">
+      <h2>Repeating</h2>
       <p>This will be all timers that reset at a custom interval</p>
       <ListTimers 
         filtered={this.state.data.filter(item=>(item.period[0] === 'i'))} 
@@ -286,7 +273,7 @@ render() {
     <Typography
       component="section"
       role="tabpanel"
-      hidden={this.state.section !== 5}
+      hidden={this.state.section !== 4}
       id="addTimer">
       <AddForm addTimer={this.addTimer} />
     </Typography>
