@@ -217,30 +217,26 @@ export default class AddForm extends React.Component<any,any>{
 
   calculateDayOfWeek(){
     let DoW = "";
-    if(this.state.allDays){
-      DoW = "0123456";
-    } else {
-      if(this.state.sun){
-        DoW += '0';
-      }
-      if(this.state.mon){
-        DoW += '1';
-      }
-      if(this.state.tue){
-        DoW += '2';
-      }
-      if(this.state.wed){
-        DoW += '3';
-      }
-      if(this.state.thu){
-        DoW += '4';
-      }
-      if(this.state.fri){
-        DoW += '5';
-      }
-      if(this.state.sat){
-        DoW += '6';
-      }
+    if(this.state.days.sun){
+      DoW += '0';
+    }
+    if(this.state.days.mon){
+      DoW += '1';
+    }
+    if(this.state.days.tue){
+      DoW += '2';
+    }
+    if(this.state.days.wed){
+      DoW += '3';
+    }
+    if(this.state.days.thu){
+      DoW += '4';
+    }
+    if(this.state.days.fri){
+      DoW += '5';
+    }
+    if(this.state.days.sat){
+      DoW += '6';
     }
     return DoW;
   }
