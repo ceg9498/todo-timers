@@ -3,7 +3,7 @@ import { TimerType } from '../data/schema';
 import './timer.scss';
 
 import Icon from '@material-ui/core/Icon';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 
 interface ITimer {
   data: TimerType,
