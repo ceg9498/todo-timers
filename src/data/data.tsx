@@ -106,7 +106,6 @@ var loadData = new Promise((resolve, reject) => {
     let objStoreReq = store.getAll();
 
     objStoreReq.onsuccess = (event:any) => {
-      console.log("Load result: " ,event.target.result);
       resolve(event.target.result);
     };
 
