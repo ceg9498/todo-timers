@@ -76,6 +76,30 @@ export default class AddForm extends React.Component<any,any>{
     }
   }
 
+  clearForm = () => {
+    this.setState({
+      title: "",
+      required: false,
+      isCompleted: false,
+      timerType: "regular",
+      hour: 11,
+      minute: 0,
+      allDays: false,
+      partialDays: false,
+      days: {
+        sun: false,
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+        sat: false
+      },
+      unitValue: 1,
+      unitType: "hours"
+    });
+  }
+
   verifyUnit(value:number,min:number,max?:number):number{
     if(value < min){
       return min;
@@ -232,6 +256,7 @@ export default class AddForm extends React.Component<any,any>{
         name="title"
         label="Title"
         className="timer-name-field"
+        value={this.state.title}
         margin="normal"
         onChange={(e)=>this.handleChange(e,"title")} />
 
@@ -339,8 +364,11 @@ export default class AddForm extends React.Component<any,any>{
       }
       </div>
       <br/>
-      <Button variant="contained" onClick={this.handleSubmit}>
+      <Button variant="contained" color="primary" onClick={this.handleSubmit}>
         Submit
+      </Button>&nbsp;
+      <Button variant="contained" color="secondary" onClick={this.clearForm}>
+        Clear
       </Button>
     </form>
   );
