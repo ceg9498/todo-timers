@@ -8,14 +8,21 @@ interface IOptionsProps {
 }
 
 interface IOptionsState {
-  hideCompleted:boolean
+  hideCompleted:boolean,
+  viewSlim:boolean
 }
 
 export default function Options(props:IOptionsProps){
   let { setOptions, optionsState } = props;
   return (
-    <FormControlLabel control={
-      <Switch checked={optionsState.hideCompleted} onChange={(e)=>setOptions(e,"hideCompleted")} />
-    } label="Hide Completed" />
+    <>
+      <FormControlLabel control={
+        <Switch checked={optionsState.hideCompleted} onChange={(e)=>setOptions(e,"hideCompleted")} />
+      } label="Hide Completed" />
+      <br/>
+      <FormControlLabel control={
+        <Switch checked={optionsState.viewSlim} onChange={(e)=>setOptions(e,"viewSlim")} />
+      } label="Slim Timers" />
+    </>
   );
 }

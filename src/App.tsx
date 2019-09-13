@@ -37,6 +37,7 @@ export default class TimerList extends Component<any,any> {
       },
       options: {
         hideCompleted: false,
+        viewSlim: true,
       },
       dialog: {
         isOpen:false,
@@ -231,13 +232,25 @@ export default class TimerList extends Component<any,any> {
     });
   };
 
+  openDialog = (id:any) => {
+    this.setState({
+      dialog: {
+        isOpen: true,
+        id: id
+      }
+    });
+  }
+
   closeDialog = (
     event:React.SyntheticEvent|React.MouseEvent,
     reason?:string) => {
     this.setState({
-      isDialogOpen:false
+      dialog:{
+        isOpen:false,
+        id:null
+      }
     });
-  }
+  };
 
   setOptions = (event:any,name:string) => {
     let value = event.target.type === 'checkbox' ? 
@@ -273,6 +286,8 @@ export default class TimerList extends Component<any,any> {
           <ListTimers 
             filtered={this.filterList()} 
             handleChange={this.handleChange}
+            viewSlim={this.state.options.viewSlim}
+            openDialog={this.openDialog}
             deleteItem={this.delete} />
         </Typography>
 
@@ -286,6 +301,8 @@ export default class TimerList extends Component<any,any> {
           <ListTimers 
             filtered={this.filterList().filter(item=>(item.required === true))} 
             handleChange={this.handleChange}
+            viewSlim={this.state.options.viewSlim}
+            openDialog={this.openDialog}
             deleteItem={this.delete} />
         </Typography>
 
@@ -299,6 +316,8 @@ export default class TimerList extends Component<any,any> {
           <ListTimers 
             filtered={this.filterList().filter(item=>(item.period[0] === 'r'))} 
             handleChange={this.handleChange}
+            viewSlim={this.state.options.viewSlim}
+            openDialog={this.openDialog}
             deleteItem={this.delete} />
         </Typography>
         
@@ -312,6 +331,8 @@ export default class TimerList extends Component<any,any> {
           <ListTimers 
             filtered={this.filterList().filter(item=>(item.period[0] === 'i'))} 
             handleChange={this.handleChange}
+            viewSlim={this.state.options.viewSlim}
+            openDialog={this.openDialog}
             deleteItem={this.delete} />
         </Typography>
 
@@ -349,23 +370,40 @@ export default class TimerList extends Component<any,any> {
 
 interface ITimerList {
   filtered:Array<TimerType>,
+  viewSlim:boolean,
   handleChange:Function,
-  deleteItem:Function
+  deleteItem:Function,
+  openDialog:Function,
+  editItem?:Function
 }
 
 function ListTimers(props:ITimerList){
-  let { filtered, handleChange, deleteItem } = props;
-  return(
-    <div className="flex">
-      {filtered.map((item) => {
-        return(
-         <div key={item.id}>
-           <Timer data={item} handleChange={handleChange} delete={deleteItem} />
-         </div>
-       );
-      })}
-    </div>
-  );
+  let { filtered, handleChange, deleteItem, viewSlim, openDialog } = props;
+  if(viewSlim){
+    return(
+      <div className="flex">
+        {filtered.map((item) => {
+          return(
+          <div key={item.id}>
+            <Timer data={item} viewSlim={viewSlim} handleChange={handleChange} info={openDialog} />
+          </div>
+        );
+        })}
+      </div>
+    );
+  } else {
+    return(
+      <div className="flex">
+        {filtered.map((item) => {
+          return(
+          <div key={item.id}>
+            <Timer data={item} viewSlim={viewSlim} handleChange={handleChange} delete={deleteItem} />
+          </div>
+        );
+        })}
+      </div>
+    );
+  }
 }
 
 interface IDialog {
@@ -399,7 +437,10 @@ function DisplayDialog(props:IDialog){
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteTimer}>
+          <Button onClick={closeDialog}>
+            Close
+          </Button>
+          <Button onClick={()=>deleteTimer(props.timer.id)}>
             Delete
           </Button>
         </DialogActions>
