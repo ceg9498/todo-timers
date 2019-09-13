@@ -8,7 +8,9 @@ import Typography from '@material-ui/core/Typography';
 interface ITimer {
   data: TimerType,
   handleChange: Function,
-  delete: Function
+  delete?: Function,
+  edit?: Function,
+  info?: Function
 }
 
 export default class Timer extends Component<ITimer,any> {
