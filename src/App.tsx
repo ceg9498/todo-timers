@@ -5,6 +5,7 @@ import { setReset, checkResets } from './helpers/Reset'
 import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany, deleteOne } from './data/data'
 import { TimerType } from './data/schema'
 import AddForm from './component/addForm'
+import Options from './component/options'
 import './App.scss';
 
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +23,9 @@ export default class TimerList extends Component<any,any> {
       snack: {
         isOpen:false,
         message:""
+      },
+      options: {
+        hideCompleted: false
       }
     };
   }
@@ -212,6 +216,25 @@ export default class TimerList extends Component<any,any> {
     });
   }
 
+  setOptions = (event:any,name:string) => {
+    let value = event.target.type === 'checkbox' ? 
+      event.target.checked : 
+      event.target.value;
+    this.setState({
+      options: {
+        [name]: value
+      }
+    })
+  }
+
+  filterList(){
+    let filtered = this.state.data;
+    if(this.state.options.hideCompleted){
+      filtered = filtered.filter(item => !item.isCompleted);
+    }
+    return filtered;
+  }
+
 render() {
   console.log("Next Reset: ",this.state.nextReset)
  return (
@@ -226,7 +249,7 @@ render() {
       <h2>All Timers</h2>
       <p>This will be all timers</p>
       <ListTimers 
-        filtered={this.state.data} 
+        filtered={this.filterList()} 
         handleChange={this.handleChange}
         deleteItem={this.delete} />
     </Typography>
@@ -239,7 +262,7 @@ render() {
       <h2>Required Timers</h2>
       <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
       <ListTimers 
-        filtered={this.state.data.filter(item=>(item.required === true))} 
+        filtered={this.filterList().filter(item=>(item.required === true))} 
         handleChange={this.handleChange}
         deleteItem={this.delete} />
     </Typography>
@@ -252,7 +275,7 @@ render() {
       <h2>Scheduled</h2>
       <p>This will be all timers that reset each day</p>
       <ListTimers 
-        filtered={this.state.data.filter(item=>(item.period[0] === 'r'))} 
+        filtered={this.filterList().filter(item=>(item.period[0] === 'r'))} 
         handleChange={this.handleChange}
         deleteItem={this.delete} />
     </Typography>
@@ -265,7 +288,7 @@ render() {
       <h2>Repeating</h2>
       <p>This will be all timers that reset at a custom interval</p>
       <ListTimers 
-        filtered={this.state.data.filter(item=>(item.period[0] === 'i'))} 
+        filtered={this.filterList().filter(item=>(item.period[0] === 'i'))} 
         handleChange={this.handleChange}
         deleteItem={this.delete} />
     </Typography>
@@ -276,6 +299,15 @@ render() {
       hidden={this.state.section !== 4}
       id="addTimer">
       <AddForm addTimer={this.addTimer} />
+    </Typography>
+    
+    <Typography
+      component="section"
+      role="tabpanel"
+      hidden={this.state.section !== 5}
+      id="options">
+      <h2>Options</h2>
+      <Options setOptions={this.setOptions} optionsState={this.state.options} />
     </Typography>
 
     <DisplaySnack 

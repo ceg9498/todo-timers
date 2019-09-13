@@ -14,6 +14,7 @@ export default function Navbar(props){
                 <Tab label="Scheduled" />
                 <Tab label="Repeating" />
                 <Tab label="Add Timer" />
+                <Tab label="Options" />
             </Tabs>
         </AppBar>
    );
