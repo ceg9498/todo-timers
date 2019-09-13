@@ -180,7 +180,11 @@ export default class TimerList extends Component<any,any> {
 
     this.setState({
       data: dataArr,
-      displayAddForm: false
+      displayAddForm: false,
+      snack: {
+        isOpen: true,
+        message: "Timer added"
+      }
     });
   }
 
