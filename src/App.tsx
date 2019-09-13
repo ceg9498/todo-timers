@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
-import { setReset, checkResets } from './helpers/Reset'
-import { initIDB, loadData, filterData, addOrUpdateOne, addOrUpdateMany, deleteOne } from './data/data'
-import { TimerType } from './data/schema'
-import AddForm from './component/addForm'
-import Options from './component/options'
+import { setReset, checkResets } from './helpers/Reset';
+import { 
+  initIDB, loadData, filterData, 
+  addOrUpdateOne, addOrUpdateMany, 
+  deleteOne } from './data/data';
+import { TimerType } from './data/schema';
+import AddForm from './component/addForm';
+import Options from './component/options';
 import './App.scss';
 
 import Typography from '@material-ui/core/Typography';
@@ -22,10 +25,10 @@ export default class TimerList extends Component<any,any> {
       section:0,
       snack: {
         isOpen:false,
-        message:""
+        message:"",
       },
       options: {
-        hideCompleted: false
+        hideCompleted: false,
       }
     };
   }
@@ -83,7 +86,7 @@ export default class TimerList extends Component<any,any> {
     });
     // re-create timeout based on the new data
     this.createTimeout(data);
-  }
+  };
 
   delete = (id:any) => {
     deleteOne(id);
@@ -96,7 +99,7 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       data:data
     });
-  }
+  };
 
   handleReset = () => {
     let hasReset = 0;
@@ -131,7 +134,7 @@ export default class TimerList extends Component<any,any> {
         });
       }
     }
-  }
+  };
 
   createTimeout = (data?:TimerType[]) => {
     // clear an existing timeout before creating a new one
@@ -146,7 +149,7 @@ export default class TimerList extends Component<any,any> {
     let timeoutMS = 24 * 60 * 60 * 1000;
     // nextReset will hold the date of the next timeout check
     let nextReset:Date;
-    let now = new Date()
+    let now = new Date();
     data.forEach(item=>{
       if(item.isCompleted){
         if((item.resetTime.valueOf()-now.valueOf()) < timeoutMS){
@@ -164,7 +167,7 @@ export default class TimerList extends Component<any,any> {
       nextReset:nextReset,
       timeout:timeout
     });
-  }
+  };
 
   addTimer = (data:TimerType) => {
     let dataArr = this.state.data;
@@ -190,19 +193,19 @@ export default class TimerList extends Component<any,any> {
         message: "Timer added"
       }
     });
-  }
+  };
 
   displayAddForm = () => {
     this.setState({
       displayAddForm: true
     });
-  }
+  };
 
   handleTabChange = (event:any,newValue:number) => {
     this.setState({
       section:newValue
     });
-  }
+  };
 
   closeSnack = (
     event:React.SyntheticEvent|React.MouseEvent,
@@ -214,7 +217,7 @@ export default class TimerList extends Component<any,any> {
         message:""
       }
     });
-  }
+  };
 
   setOptions = (event:any,name:string) => {
     let value = event.target.type === 'checkbox' ? 
@@ -224,8 +227,8 @@ export default class TimerList extends Component<any,any> {
       options: {
         [name]: value
       }
-    })
-  }
+    });
+  };
 
   filterList(){
     let filtered = this.state.data;
@@ -235,88 +238,87 @@ export default class TimerList extends Component<any,any> {
     return filtered;
   }
 
-render() {
-  console.log("Next Reset: ",this.state.nextReset)
- return (
-  <article id="root">
-    <Navbar value={this.state.section} handleTabChange={this.handleTabChange} />
+  render() {
+    return (
+      <article id="root">
+        <Navbar value={this.state.section} handleTabChange={this.handleTabChange} />
 
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 0}
-      id="top">
-      <h2>All Timers</h2>
-      <p>This will be all timers</p>
-      <ListTimers 
-        filtered={this.filterList()} 
-        handleChange={this.handleChange}
-        deleteItem={this.delete} />
-    </Typography>
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 0}
+          id="top">
+          <h2>All Timers</h2>
+          <p>This will be all timers</p>
+          <ListTimers 
+            filtered={this.filterList()} 
+            handleChange={this.handleChange}
+            deleteItem={this.delete} />
+        </Typography>
 
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 1}
-      id="top">
-      <h2>Required Timers</h2>
-      <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
-      <ListTimers 
-        filtered={this.filterList().filter(item=>(item.required === true))} 
-        handleChange={this.handleChange}
-        deleteItem={this.delete} />
-    </Typography>
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 1}
+          id="top">
+          <h2>Required Timers</h2>
+          <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
+          <ListTimers 
+            filtered={this.filterList().filter(item=>(item.required === true))} 
+            handleChange={this.handleChange}
+            deleteItem={this.delete} />
+        </Typography>
 
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 2}
-      id="scheduled">
-      <h2>Scheduled</h2>
-      <p>This will be all timers that reset each day</p>
-      <ListTimers 
-        filtered={this.filterList().filter(item=>(item.period[0] === 'r'))} 
-        handleChange={this.handleChange}
-        deleteItem={this.delete} />
-    </Typography>
-    
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 3}
-      id="repeating">
-      <h2>Repeating</h2>
-      <p>This will be all timers that reset at a custom interval</p>
-      <ListTimers 
-        filtered={this.filterList().filter(item=>(item.period[0] === 'i'))} 
-        handleChange={this.handleChange}
-        deleteItem={this.delete} />
-    </Typography>
-    
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 4}
-      id="addTimer">
-      <AddForm addTimer={this.addTimer} />
-    </Typography>
-    
-    <Typography
-      component="section"
-      role="tabpanel"
-      hidden={this.state.section !== 5}
-      id="options">
-      <h2>Options</h2>
-      <Options setOptions={this.setOptions} optionsState={this.state.options} />
-    </Typography>
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 2}
+          id="scheduled">
+          <h2>Scheduled</h2>
+          <p>This will be all timers that reset each day</p>
+          <ListTimers 
+            filtered={this.filterList().filter(item=>(item.period[0] === 'r'))} 
+            handleChange={this.handleChange}
+            deleteItem={this.delete} />
+        </Typography>
+        
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 3}
+          id="repeating">
+          <h2>Repeating</h2>
+          <p>This will be all timers that reset at a custom interval</p>
+          <ListTimers 
+            filtered={this.filterList().filter(item=>(item.period[0] === 'i'))} 
+            handleChange={this.handleChange}
+            deleteItem={this.delete} />
+        </Typography>
 
-    <DisplaySnack 
-      isSnackOpen={this.state.snack.isOpen} 
-      message={this.state.snack.message}
-      closeSnack={this.closeSnack} />
-  </article>
- );
-}
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 4}
+          id="addTimer">
+          <AddForm addTimer={this.addTimer} />
+        </Typography>
+        
+        <Typography
+          component="section"
+          role="tabpanel"
+          hidden={this.state.section !== 5}
+          id="options">
+          <h2>Options</h2>
+          <Options setOptions={this.setOptions} optionsState={this.state.options} />
+        </Typography>
+
+        <DisplaySnack 
+          isSnackOpen={this.state.snack.isOpen} 
+          message={this.state.snack.message}
+          closeSnack={this.closeSnack} />
+      </article>
+    );
+  }
 }
 
 interface ITimerList {
@@ -345,6 +347,7 @@ interface ISnack {
   message:string,
   closeSnack:any
 }
+
 function DisplaySnack(props:ISnack){
   let { isSnackOpen, message, closeSnack } = props;
   return(

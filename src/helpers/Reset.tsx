@@ -6,7 +6,7 @@ export function setReset(period:String):Date{
   // for "interval" type timers
   if(data[0] === 'i'){
     let amount = parseInt(data[1]);
-    let unit = data[2]
+    let unit = data[2];
     switch(unit){
       case "minutes":
         result.setMinutes(result.getMinutes() + amount);
@@ -91,7 +91,7 @@ export function setReset(period:String):Date{
 }
 
 export function checkResets(targetTime:Date){
-  let now = new Date()
+  let now = new Date();
 
   // if `now` is MORE than `timer`, reset
   if(now.valueOf() > targetTime.valueOf()){
