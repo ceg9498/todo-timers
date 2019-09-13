@@ -196,6 +196,18 @@ export default class TimerList extends Component<any,any> {
     });
   }
 
+  closeSnack = (
+    event:React.SyntheticEvent|React.MouseEvent,
+    reason?:string) => {
+    // reason can be "clickaway" or "timeout"
+    this.setState({
+      snack: {
+        isOpen:false,
+        message:""
+      }
+    });
+  }
+
 render() {
   console.log("Next Reset: ",this.state.nextReset)
  return (
@@ -275,7 +287,10 @@ render() {
       <AddForm addTimer={this.addTimer} />
     </Typography>
 
-    <DisplaySnack isSnackOpen={this.state.snack.isOpen} message={this.state.snack.message} />
+    <DisplaySnack 
+      isSnackOpen={this.state.snack.isOpen} 
+      message={this.state.snack.message}
+      closeSnack={this.closeSnack} />
   </article>
  );
 }
@@ -304,10 +319,11 @@ function ListTimers(props:ITimerList){
 
 interface ISnack {
   isSnackOpen:boolean,
-  message:string
+  message:string,
+  closeSnack:any
 }
 function DisplaySnack(props:ISnack){
-  let { isSnackOpen, message } = props;
+  let { isSnackOpen, message, closeSnack } = props;
   return(
     <Snackbar
       anchorOrigin={{
@@ -316,6 +332,7 @@ function DisplaySnack(props:ISnack){
       }}
       open={isSnackOpen}
       autoHideDuration={6000}
+      onClose={closeSnack}
       ContentProps={{
         'aria-describedby': 'message-id'
       }}
