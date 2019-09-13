@@ -367,7 +367,7 @@ export default class AddForm extends React.Component<any,any>{
       <Button variant="contained" color="primary" onClick={this.handleSubmit}>
         Submit
       </Button>&nbsp;
-      <Button variant="contained" color="secondary" onClick={this.clearForm}>
+      <Button variant="contained" onClick={this.clearForm}>
         Clear
       </Button>
     </form>
