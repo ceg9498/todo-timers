@@ -68,17 +68,16 @@ export default class TimerList extends Component<any,any> {
     }
   }
 
-  handleChange = (e:React.FormEvent<EventTarget>,id) => {
-    let target = e.target as HTMLInputElement;
+  handleChange = (id:any) => {
     let data = this.state.data;
 
     // set the proper item to complete & add the current Date
     data.forEach(item=>{
       if(item.id === id){
         // set the item based on checkbox state
-        item.isCompleted = target.checked;
+        item.isCompleted = !item.isCompleted;
         // if the checkbox IS checked, do extra steps
-        if(target.checked){
+        if(item.isCompleted){
           item.completed.push(new Date());
           if(item.completed.length > 7){
             // if there are more than 7 date entries, remove the oldest
