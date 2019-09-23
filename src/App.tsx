@@ -27,7 +27,6 @@ export default class TimerList extends Component<any,any> {
       data:[],
       nextReset: null,
       timeout: null,
-      displayAddForm: false,
       section:0,
       snack: {
         isOpen:false,
@@ -84,7 +83,6 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       categories: categories
     });
-    console.log("Categories are: ",categories)
   }
 
   handleChange = (id:any) => {
@@ -238,12 +236,6 @@ export default class TimerList extends Component<any,any> {
       });
     }).catch((message)=>{
       this.openSnack(message);
-    });
-  };
-
-  displayAddForm = () => {
-    this.setState({
-      displayAddForm: true
     });
   };
 
