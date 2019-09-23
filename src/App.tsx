@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import Navbar from './component/Navbar';
 import Timer from './component/Timer';
 import { setReset, checkResets } from './helpers/Reset';
-import { 
-  initIDB, loadData, filterData, 
-  addOrUpdateOne, addOrUpdateMany, 
-  deleteOne } from './data/data';
+import { initIDB, addOrUpdateOne, addOrUpdateMany, deleteOne } 
+  from './data/data';
 import { TimerType } from './data/schema';
 import AddForm from './component/addForm';
 import Options from './component/options';
@@ -47,29 +45,30 @@ export default class TimerList extends Component<any,any> {
   }
 
   componentWillMount(){
-    initIDB.then(()=>{
-      loadData.then((data:TimerType[])=>{
-        this.setState(()=>{
-          return {data:filterData(data)}
-        });
-        this.createTimeout(data);
-        let categories = [];
-        data.forEach(item => {
-          if(item.category !== ""){
-            if(!categories.includes(item.category)){
-              categories.push(item.category);
-            }
-          }
-        });
-        this.setState({
-          categories: categories
-        });
-        console.log("Categories are: ",categories)
-      }).catch((error)=>{
-        console.error("Error loading data from IndexedDB: ",error);
+    initIDB.then((data:TimerType[])=>{
+      this.setState({
+        data:data
       });
+      this.createTimeout(data);
+      let categories = [];
+      data.forEach(item => {
+        if(item.category !== ""){
+          if(!categories.includes(item.category)){
+            categories.push(item.category);
+          }
+        }
+      });
+      this.setState({
+        categories: categories
+      });
+      console.log("Categories are: ",categories)
     }).catch(error => {
-      console.error("Error opening IndexedDB: ", error);
+      this.setState({
+        snack: {
+          isOpen: true,
+          message: "Error opening Database"
+        }
+      });
     });
   }
 

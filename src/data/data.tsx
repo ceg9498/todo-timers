@@ -2,13 +2,6 @@ import { TimerType } from './schema';
 import { checkResets } from '../helpers/Reset';
 
 const DB_VER = 1;
-/* TODO: 
-  - change the console.log/error messages into user feedback
-  - move loadData() to inside of initIDB() & out of TimerList
-  - rename filterData()
-  - move filterData() to inside of loadData()
-    [ InitDB should return an array of TimerType or an empty array ]
-*/
 
 var initIDB = new Promise((resolve,reject)=> {
   // dbName will be the DB name, storeName will be the store name.
@@ -41,11 +34,24 @@ var initIDB = new Promise((resolve,reject)=> {
 
     store.onerror = () => {
       console.error("store not created, error: ",store.error);
+      reject(store.error);
     };
   };
 
   request.onsuccess = (event:any) => {
-    resolve();
+    let db = request.result;
+    var transaction = db.transaction('timerData', 'readonly');
+    var store = transaction.objectStore('timerData');
+    let objStoreReq = store.getAll();
+  
+    objStoreReq.onsuccess = (event:any) => {
+      resolve(cleanseData(event.target.result));
+    };
+  
+    objStoreReq.onerror = (event:any) => {
+      console.error("Error: ", event.target.error);
+      reject(event.target.error);
+    };
   };
 });
 
@@ -96,31 +102,6 @@ function addOrUpdateOne(item:TimerType){
   };
 }
 
-var loadData = new Promise((resolve, reject) => {
-  var request = window.indexedDB.open('timers',DB_VER);
-
-  request.onsuccess = (event:any) => {
-    let db = request.result;
-    var transaction = db.transaction('timerData', 'readonly');
-    var store = transaction.objectStore('timerData');
-    let objStoreReq = store.getAll();
-
-    objStoreReq.onsuccess = (event:any) => {
-      resolve(event.target.result);
-    };
-
-    objStoreReq.onerror = (event:any) => {
-      console.error("Error: ", event.target.error);
-      reject(event.target.error);
-    };
-  };
-
-  request.onerror = (event:any) => {
-    console.error("Unable to retrieve data. Error: ", event.target.error);
-    reject(event.target.error);
-  };
-});
-
 function deleteOne(id:any){
   var request = window.indexedDB.open('timers',DB_VER);
 
@@ -144,7 +125,7 @@ function deleteOne(id:any){
   };
 }
 
-function filterData(data:TimerType[]):TimerType[]{
+function cleanseData(data:TimerType[]):TimerType[]{
   data.forEach(item=>{
     // fix date for the reset time
     item.resetTime = new Date(item.resetTime);
@@ -172,5 +153,5 @@ function filterData(data:TimerType[]):TimerType[]{
   return data;
 }
 
-export { initIDB, loadData, filterData, 
+export { initIDB,
   addOrUpdateMany, addOrUpdateOne, deleteOne };
