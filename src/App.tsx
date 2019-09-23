@@ -50,25 +50,9 @@ export default class TimerList extends Component<any,any> {
         data:data
       });
       this.createTimeout(data);
-      let categories = [];
-      data.forEach(item => {
-        if(item.category !== ""){
-          if(!categories.includes(item.category)){
-            categories.push(item.category);
-          }
-        }
-      });
-      this.setState({
-        categories: categories
-      });
-      console.log("Categories are: ",categories)
-    }).catch(error => {
-      this.setState({
-        snack: {
-          isOpen: true,
-          message: "Error opening Database"
-        }
-      });
+      this.setCategories(data);
+    }).catch(message => {
+      this.openSnack(message);
     });
   }
 
@@ -77,6 +61,30 @@ export default class TimerList extends Component<any,any> {
     if(this.state.timeout !== null){
       clearTimeout(this.state.timeout);
     }
+  }
+
+  openSnack = (message:string) => {
+    this.setState({
+      snack: {
+        isOpen: true,
+        message: message
+      }
+    });
+  }
+
+  setCategories = (data:TimerType[]) => {
+    let categories = [];
+    data.forEach(item => {
+      if(item.category !== ""){
+        if(!categories.includes(item.category)){
+          categories.push(item.category);
+        }
+      }
+    });
+    this.setState({
+      categories: categories
+    });
+    console.log("Categories are: ",categories)
   }
 
   handleChange = (id:any) => {
@@ -100,7 +108,11 @@ export default class TimerList extends Component<any,any> {
           item.completed.pop();
           item.resetTime = null;
         }
-        addOrUpdateOne(item);
+        addOrUpdateOne(item).then((message:string)=>{
+          this.openSnack(message);
+        }).catch((message:string)=>{
+          this.openSnack(message);
+        });
       }
     });
     // apply the new data to STATE
@@ -112,24 +124,25 @@ export default class TimerList extends Component<any,any> {
   };
 
   delete = (id:any,source?:string) => {
-    deleteOne(id);
-    let data = [];
-    this.state.data.forEach(entry => {
-      if(entry.id !== id){
-        data.push(entry);
+    deleteOne(id).then((message:string)=>{
+      this.openSnack(message);
+      let data = [];
+      this.state.data.forEach(entry => {
+        if(entry.id !== id){
+          data.push(entry);
+        }
+      });
+      this.setCategories(data);
+      this.setState({
+        data:data
+      });
+      // other option is "timerCard"
+      if(source === "dialog"){
+        this.closeDialog(null);
       }
+    }).catch((message:string)=>{
+      this.openSnack(message);
     });
-    this.setState({
-      data:data,
-      snack: {
-        isOpen: true,
-        message: "Timer deleted."
-      }
-    });
-    // other option is "timerCard"
-    if(source === "dialog"){
-      this.closeDialog(null);
-    }
   };
 
   handleReset = () => {
@@ -143,27 +156,19 @@ export default class TimerList extends Component<any,any> {
       }
     });
     if(hasReset > 0){
-      addOrUpdateMany(data);
-      this.createTimeout(data);
-      this.setState({
-        data: data
+      addOrUpdateMany(data).then(()=>{
+        this.createTimeout(data);
+        this.setState({
+          data: data
+        });
+        if(hasReset === 1){
+          this.openSnack("A timer has reset");
+        } else {
+          this.openSnack(hasReset + " timers have reset");
+        }
+      }).catch((message) => {
+        this.openSnack(message);
       });
-      if(hasReset === 1){
-        this.setState({
-          snack:{
-            isOpen:true,
-            message:"A timer has reset"
-          }
-        });
-      } else {
-        let msg = hasReset + " timers have reset";
-        this.setState({
-          snack:{
-            isOpen:true,
-            message:msg
-          }
-        });
-      }
     }
   };
 
@@ -213,25 +218,26 @@ export default class TimerList extends Component<any,any> {
       nID++;
     }
     data.id = nID;
-    addOrUpdateOne(data);
-    dataArr.push(data);
+    addOrUpdateOne(data).then((message:string)=>{
+      this.openSnack(message);
 
-    let section = this.state.section;
-    let categories = this.state.categories;
-    if(!categories.includes(data.category)){
-      categories.push(data.category);
-      section++;
-    }
-
-    this.setState({
-      data: dataArr,
-      displayAddForm: false,
-      snack: {
-        isOpen: true,
-        message: "Timer added"
-      },
-      categories: categories,
-      section: section
+      dataArr.push(data);
+  
+      let section = this.state.section;
+      let categories = this.state.categories;
+      if(data.category !== "" && !categories.includes(data.category)){
+        this.setCategories(dataArr);
+        section++;
+      }
+  
+      this.setState({
+        data: dataArr,
+        displayAddForm: false,
+        categories: categories,
+        section: section
+      });
+    }).catch((message)=>{
+      this.openSnack(message);
     });
   };
 

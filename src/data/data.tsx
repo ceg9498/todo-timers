@@ -15,7 +15,7 @@ var initIDB = new Promise((resolve,reject)=> {
   // handle errors
   request.onerror = function(event:any){
     console.error("IndexedDB Error: ", request.error);
-    reject(request.error);
+    reject("Failed to open database");
   };
 
   // handle db upgrades
@@ -28,13 +28,9 @@ var initIDB = new Promise((resolve,reject)=> {
       {keyPath:'id',autoIncrement:true}
     );
 
-    store.onsuccess = () => {
-      console.log("store created successfully");
-    };
-
     store.onerror = () => {
       console.error("store not created, error: ",store.error);
-      reject(store.error);
+      reject("Failed to open database");
     };
   };
 
@@ -50,79 +46,107 @@ var initIDB = new Promise((resolve,reject)=> {
   
     objStoreReq.onerror = (event:any) => {
       console.error("Error: ", event.target.error);
-      reject(event.target.error);
+      reject("Failed to load data");
     };
   };
 });
 
 function addOrUpdateMany(items:TimerType[]) {
-  var request = window.indexedDB.open('timers',DB_VER);
+  return new Promise((resolve,reject) => {
+    var request = window.indexedDB.open('timers',DB_VER);
 
-  request.onsuccess = (event:any) => {
-    let db = request.result;
-    var transaction = db.transaction('timerData', 'readwrite');
-    var store = transaction.objectStore('timerData');
-    var objStoreReq;
-    items.forEach(item => 
-      objStoreReq = store.put(item)
-    );
+    request.onsuccess = (event:any) => {
+      let db = request.result;
+      var transaction = db.transaction('timerData', 'readwrite');
+      var store = transaction.objectStore('timerData');
+      var objStoreReq;
+      items.forEach(item => {
+        objStoreReq = store.put(item);
+        
+        objStoreReq.onerror = function(event) {
+          reject("Error storing item "+item.title);
+        };
+      });
 
-    transaction.oncomplete = function(event) {
-      console.log('Item(s) successfully stored.');
+      transaction.oncomplete = function(event) {
+        resolve("Data saved successfully");
+      };
+
+      transaction.onerror = (event:any) => {
+        reject("Failed to save data");
+      };
     };
 
-    objStoreReq.onerror = function(event) {
-      console.error("Error storing items: ",event.target.error);
+    request.onerror = (event:any) => {
+      reject("Failed to save data");
     };
-  };
-
-  request.onerror = (event:any) => {
-    console.error("Failed to save data: "
-      +items+" due to error: "+request.error
-    );
-  };
+  });
 }
 
 function addOrUpdateOne(item:TimerType){
-  var request = window.indexedDB.open('timers',DB_VER);
+  return new Promise((resolve,reject) => {
+    var request = window.indexedDB.open('timers',DB_VER);
 
-  request.onsuccess = (event:any) => {
-    let db = request.result;
-    var transaction = db.transaction('timerData', 'readwrite');
-    var store = transaction.objectStore('timerData');
-    store.put(item);
+    request.onsuccess = (event:any) => {
+      let db = request.result;
+      var transaction = db.transaction('timerData', 'readwrite');
+      var store = transaction.objectStore('timerData');
+      store.put(item);
 
-    transaction.oncomplete = (event:any) => {
-      return true;
+      transaction.oncomplete = (event:any) => {
+        resolve("Data saved successfully");
+      };
+
+      transaction.onerror = (event:any) => {
+        reject("Failed to save data");
+      };
     };
 
-    transaction.onerror = (event:any) => {
-      return false;
+    request.onerror = (event:any) => {
+      reject("Failed to save data");
     };
-  };
+  });
 }
 
 function deleteOne(id:any){
-  var request = window.indexedDB.open('timers',DB_VER);
+  return new Promise((resolve,reject)=>{
+    var request = window.indexedDB.open('timers',DB_VER);
 
-  request.onsuccess = (event:any) => {
-    let db = request.result;
-    var transaction = db.transaction('timerData', 'readwrite');
-    let store = transaction.objectStore('timerData');
-    let objStoreReq = store.delete(id);
+    request.onsuccess = (event:any) => {
+      let db = request.result;
+      var transaction = db.transaction('timerData', 'readwrite');
+      let store = transaction.objectStore('timerData');
+      let infoReq = store.get(id);
+      let objStoreReq = store.delete(id);
+      let title = "";
 
-    objStoreReq.onsuccess = (event:any) => {
-      console.log("Item id " + id + " deleted successfully!", event);
+      infoReq.onsuccess = (event:any) => {
+        title = event.target.result.title;
+      };
+
+      objStoreReq.onsuccess = (event:any) => {
+        let message = "";
+        if(title !== ""){
+          message = title + " was deleted";
+        } else {
+          message = "Timer was deleted";
+        }
+        resolve(message);
+      };
+
+      objStoreReq.onerror = (event:any) => {
+        reject("Unable to delete entry");
+      };
+
+      transaction.onerror = (event:any) => {
+        reject("Unable to delete entry");
+      };
     };
 
-    objStoreReq.onerror = (event:any) => {
-      console.error("Unable to delete entry. Error: ",event.target.error);
+    request.onerror = (event:any) => {
+      reject("Unable to delete entry");
     };
-  };
-
-  request.onerror = (event:any) => {
-    console.error("Unable to delete entry. Error: ", event.target.error);
-  };
+  });
 }
 
 function cleanseData(data:TimerType[]):TimerType[]{
