@@ -55,7 +55,7 @@ var initIDB = new Promise((resolve,reject)=> {
   };
 });
 
-function addOrUpdateMany(items:Array<TimerType>) {
+function addOrUpdateMany(items:TimerType[]) {
   var request = window.indexedDB.open('timers',DB_VER);
 
   request.onsuccess = (event:any) => {
