@@ -67,7 +67,7 @@ export default class Timer extends Component<ITimer,any> {
           :
             <IconButton 
               aria-label={"Delete "+timer.title}
-              onClick={()=>this.props.delete(timer.id)}>
+              onClick={()=>this.props.delete(timer.id,"timerCard")}>
               <Icon className="delete">delete_forever</Icon>
             </IconButton>
           }

@@ -53,6 +53,18 @@ export default class TimerList extends Component<any,any> {
           return {data:filterData(data)}
         });
         this.createTimeout(data);
+        let categories = [];
+        data.forEach(item => {
+          if(item.category !== ""){
+            if(!categories.includes(item.category)){
+              categories.push(item.category);
+            }
+          }
+        });
+        this.setState({
+          categories: categories
+        });
+        console.log("Categories are: ",categories)
       }).catch((error)=>{
         console.error("Error loading data from IndexedDB: ",error);
       });
@@ -100,7 +112,7 @@ export default class TimerList extends Component<any,any> {
     this.createTimeout(data);
   };
 
-  delete = (id:any) => {
+  delete = (id:any,source?:string) => {
     deleteOne(id);
     let data = [];
     this.state.data.forEach(entry => {
@@ -109,8 +121,16 @@ export default class TimerList extends Component<any,any> {
       }
     });
     this.setState({
-      data:data
+      data:data,
+      snack: {
+        isOpen: true,
+        message: "Timer deleted."
+      }
     });
+    // other option is "timerCard"
+    if(source === "dialog"){
+      this.closeDialog(null);
+    }
   };
 
   handleReset = () => {
@@ -197,13 +217,22 @@ export default class TimerList extends Component<any,any> {
     addOrUpdateOne(data);
     dataArr.push(data);
 
+    let section = this.state.section;
+    let categories = this.state.categories;
+    if(!categories.includes(data.category)){
+      categories.push(data.category);
+      section++;
+    }
+
     this.setState({
       data: dataArr,
       displayAddForm: false,
       snack: {
         isOpen: true,
         message: "Timer added"
-      }
+      },
+      categories: categories,
+      section: section
     });
   };
 
@@ -271,9 +300,18 @@ export default class TimerList extends Component<any,any> {
   }
 
   render() {
+    let addTimerSectionID = 2;
+    let optionsSectionID = 3;
+    if(this.state.categories !== undefined){
+      optionsSectionID += this.state.categories.length;
+      addTimerSectionID += this.state.categories.length;
+    }
     return (
       <article id="root">
-        <Navbar value={this.state.section} handleTabChange={this.handleTabChange} />
+        <Navbar 
+          value={this.state.section} 
+          handleTabChange={this.handleTabChange}
+          categories={this.state.categories} />
 
         <Typography
           component="section"
@@ -281,7 +319,6 @@ export default class TimerList extends Component<any,any> {
           hidden={this.state.section !== 0}
           id="top">
           <h2>All Timers</h2>
-          <p>This will be all timers</p>
           <ListTimers 
             filtered={this.filterList()} 
             handleChange={this.handleChange}
@@ -295,8 +332,7 @@ export default class TimerList extends Component<any,any> {
           role="tabpanel"
           hidden={this.state.section !== 1}
           id="top">
-          <h2>Required Timers</h2>
-          <p>This will be any timer marked as &quot;required&quot; that hasn&apos;t been completed for the specified time period</p>
+          <h2>Required</h2>
           <ListTimers 
             filtered={this.filterList().filter(item=>(item.required === true))} 
             handleChange={this.handleChange}
@@ -304,41 +340,28 @@ export default class TimerList extends Component<any,any> {
             openDialog={this.openDialog}
             deleteItem={this.delete} />
         </Typography>
-
-        <Typography
-          component="section"
-          role="tabpanel"
-          hidden={this.state.section !== 2}
-          id="scheduled">
-          <h2>Scheduled</h2>
-          <p>This will be all timers that reset each day</p>
-          <ListTimers 
-            filtered={this.filterList().filter(item=>(item.period[0] === 'r'))} 
-            handleChange={this.handleChange}
-            viewSlim={this.state.options.viewSlim}
-            openDialog={this.openDialog}
-            deleteItem={this.delete} />
-        </Typography>
         
-        <Typography
-          component="section"
-          role="tabpanel"
-          hidden={this.state.section !== 3}
-          id="repeating">
-          <h2>Repeating</h2>
-          <p>This will be all timers that reset at a custom interval</p>
-          <ListTimers 
-            filtered={this.filterList().filter(item=>(item.period[0] === 'i'))} 
-            handleChange={this.handleChange}
-            viewSlim={this.state.options.viewSlim}
-            openDialog={this.openDialog}
-            deleteItem={this.delete} />
-        </Typography>
+        {this.state.categories !== undefined && this.state.categories.map((category,index)=>
+          <Typography
+            key={category}
+            component="section"
+            role="tabpanel"
+            hidden={this.state.section !== 2 + index}
+            id={category+"-panel"}>
+            <h2>{category}</h2>
+            <ListTimers 
+              filtered={this.filterList().filter(item=>(item.category === category))} 
+              handleChange={this.handleChange}
+              viewSlim={this.state.options.viewSlim}
+              openDialog={this.openDialog}
+              deleteItem={this.delete} />
+          </Typography>
+        )}
 
         <Typography
           component="section"
           role="tabpanel"
-          hidden={this.state.section !== 4}
+          hidden={this.state.section !== addTimerSectionID}
           id="addTimer">
           <AddForm addTimer={this.addTimer} />
         </Typography>
@@ -346,7 +369,7 @@ export default class TimerList extends Component<any,any> {
         <Typography
           component="section"
           role="tabpanel"
-          hidden={this.state.section !== 5}
+          hidden={this.state.section !== optionsSectionID}
           id="options">
           <h2>Options</h2>
           <Options setOptions={this.setOptions} optionsState={this.state.options} />
@@ -355,7 +378,7 @@ export default class TimerList extends Component<any,any> {
         <DisplayDialog
           closeDialog={this.closeDialog}
           isOpen={this.state.dialog.isOpen}
-          deleteTimer={this.state.delete}
+          deleteItem={this.delete}
           timer={this.state.data[this.state.dialog.id]} />
 
         <DisplaySnack 
@@ -408,7 +431,7 @@ function ListTimers(props:ITimerList){
 interface IDialog {
   closeDialog:any,
   isOpen:boolean,
-  deleteTimer:any,
+  deleteItem:Function,
   editTimer?:any,
   timer:TimerType
 }
@@ -417,7 +440,7 @@ function DisplayDialog(props:IDialog){
   if(props.timer === undefined){
     return(<></>);
   }
-  let { closeDialog, isOpen, timer, deleteTimer } = props;
+  let { closeDialog, isOpen, timer, deleteItem } = props;
   return(
     <Dialog 
       onClose={closeDialog}
@@ -428,18 +451,23 @@ function DisplayDialog(props:IDialog){
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {/* Timer description will go here */}
+            {timer.category}
           </DialogContentText>
           <DialogContentText>
-            Last completion:
-            {timer.completed[timer.completed.length-1].toLocaleString()}
+            {timer.description}
+          </DialogContentText>
+          <DialogContentText>
+            {timer.completed.length > 0 &&
+              "Last completion: " +
+              timer.completed[timer.completed.length-1].toLocaleString()
+            }
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDialog}>
             Close
           </Button>
-          <Button onClick={()=>deleteTimer(props.timer.id)}>
+          <Button onClick={()=>deleteItem(props.timer.id,"dialog")}>
             Delete
           </Button>
         </DialogActions>

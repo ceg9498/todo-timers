@@ -7,11 +7,14 @@ import Tab from '@material-ui/core/Tab';
 export default function Navbar(props){
   return (
     <AppBar position="static">
-      <Tabs value={props.value} onChange={props.handleTabChange} role="navigation">
+      <Tabs value={props.value} 
+        onChange={props.handleTabChange} 
+        role="navigation">
         <Tab label="All Timers" id="a-top" />
         <Tab label="Required" />
-        <Tab label="Scheduled" />
-        <Tab label="Repeating" />
+        {props.categories !== undefined && props.categories.map(category =>
+          <Tab label={category} key={category} />
+        )}
         <Tab label="Add Timer" />
         <Tab label="Options" />
       </Tabs>

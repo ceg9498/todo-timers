@@ -5,7 +5,9 @@ export type TimerType = {
   required: boolean,
   completed: Date[],
   isCompleted: boolean,
-  period: string
+  period: string,
+  description?:string,
+  category?:string
 }
 /*
   period shoud be set to:

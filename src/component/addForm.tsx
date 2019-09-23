@@ -37,7 +37,9 @@ export default class AddForm extends React.Component<any,any>{
         sat: false
       },
       unitValue: 1,
-      unitType: "hours"
+      unitType: "hours",
+      description: "",
+      category: ""
     };
   }
 
@@ -97,7 +99,9 @@ export default class AddForm extends React.Component<any,any>{
         sat: false
       },
       unitValue: 1,
-      unitType: "hours"
+      unitType: "hours",
+      description: "",
+      category: ""
     });
   };
 
@@ -222,7 +226,9 @@ export default class AddForm extends React.Component<any,any>{
       required: this.state.required,
       completed: completed,
       isCompleted: this.state.isCompleted,
-      period: period
+      period: period,
+      description: this.state.description,
+      category: this.state.category,
     };
     this.props.addTimer(timer);
   };
@@ -266,6 +272,15 @@ export default class AddForm extends React.Component<any,any>{
             value={this.state.title}
             margin="normal"
             onChange={(e)=>this.handleChange(e,"title")} />
+
+          <TextField 
+            id="timer-category"
+            name="category"
+            label="Category"
+            className="timer-category-field"
+            value={this.state.category}
+            margin="normal"
+            onChange={(e)=>this.handleChange(e,"category")} />
 
           <FormControlLabel control={
             <Switch checked={this.state.required} onChange={(e)=>this.handleChange(e,"required")} />
@@ -374,6 +389,16 @@ export default class AddForm extends React.Component<any,any>{
             </>
           }
         </div>
+        
+        <TextField multiline fullWidth
+            id="timer-description"
+            name="description"
+            label="Description"
+            className="timer-description-field"
+            value={this.state.description}
+            margin="normal"
+            onChange={(e)=>this.handleChange(e,"description")} />
+
         <br/>
         <Button variant="contained" color="primary" onClick={this.handleSubmit}>
           Submit

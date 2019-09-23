@@ -161,6 +161,13 @@ function filterData(data:TimerType[]):TimerType[]{
       item.isCompleted = false;
       item.resetTime = null;
     }
+
+    // TEMP: if 'description' doesn't exist:
+    // add fields for description and category
+    if(item.description === undefined || item.description === null){
+      item.description = "";
+      item.category = "";
+    }
   });
   return data;
 }

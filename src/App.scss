@@ -16,6 +16,7 @@ body {
 section {
   margin-top: 50px;
   padding-left: 30px;
+  max-width: 90vw;
 }
 
 .basic-info {
@@ -23,13 +24,17 @@ section {
   display: grid;
   grid-template:
     "timer-name timer-name"
+    "timer-category timer-category"
     "important timer-type"
     "completed timer-type";
   grid-template-columns: 250px 100px;
 
   .timer-name-field {
-    margin-bottom: 16px;
     grid-area: timer-name;
+  }
+  .timer-category-field {
+    margin-bottom: 16px;
+    grid-area: timer-category;
   }
   .important-field {
     margin-top: 15px;
