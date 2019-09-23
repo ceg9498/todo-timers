@@ -27,6 +27,7 @@ export default class TimerList extends Component<any,any> {
       data:[],
       nextReset: null,
       timeout: null,
+      countdown: null,
       section:0,
       snack: {
         isOpen:false,
@@ -49,6 +50,7 @@ export default class TimerList extends Component<any,any> {
         data:data
       });
       this.createTimeout(data);
+      this.createCountdown(data);
       this.setCategories(data);
     }).catch(message => {
       this.openSnack(message);
@@ -59,6 +61,9 @@ export default class TimerList extends Component<any,any> {
     // if a timeout exists, clear it
     if(this.state.timeout !== null){
       clearTimeout(this.state.timeout);
+    }
+    if(this.state.countdown !== null){
+      clearInterval(this.state.countdown);
     }
   }
 
@@ -119,6 +124,7 @@ export default class TimerList extends Component<any,any> {
     });
     // re-create timeout based on the new data
     this.createTimeout(data);
+    this.createCountdown(data);
   };
 
   delete = (id:any,source?:string) => {
@@ -156,6 +162,7 @@ export default class TimerList extends Component<any,any> {
     if(hasReset > 0){
       addOrUpdateMany(data).then(()=>{
         this.createTimeout(data);
+        this.createCountdown(data);
         this.setState({
           data: data
         });
@@ -202,6 +209,64 @@ export default class TimerList extends Component<any,any> {
       timeout:timeout
     });
   };
+
+  createCountdown = (data?:TimerType[]) => {
+    // clear an existing timeout before creating a new one
+    if(this.state.coundown !== null){
+      clearInterval(this.state.coundown);
+    }
+    // if no data variable was passed, use state's data
+    if(data === undefined){
+      data = this.state.data;
+    }
+    // set default interval to every 10 sec
+    let intervalMS = 10000;
+
+    let now = new Date();
+    data.forEach(item=>{
+      if(item.isCompleted){
+        // set the data.countdown to be a string
+        // representing the MS between now and timer
+        let remainingMS = item.resetTime.valueOf() - now.valueOf();
+        let dayMS = 1000 * 60 * 60 * 24;
+        let hourMS = 1000 * 60 * 60;
+        let minuteMS = 1000 * 60;
+        let secondMS = 1000;
+        let days = Math.floor(remainingMS / dayMS);
+        remainingMS -= days * dayMS;
+        let hours = Math.floor(remainingMS / hourMS);
+        remainingMS -= hours * hourMS;
+
+        // create the string next
+        let cdString = "";
+        
+        if(days > 0){
+          cdString += days + " days and ";
+          if(hours > 0){
+            cdString += hours + " hours";
+          }
+        } else {
+          let minutes = Math.floor(remainingMS / minuteMS);
+          remainingMS -= minutes * minuteMS;
+          let seconds = Math.floor(remainingMS / secondMS);
+          // don't care about anything remaining after seconds
+
+          cdString += hours.toString().padStart(2,"0") + ":";
+          cdString += minutes.toString().padStart(2,"0") + ":";
+          cdString += seconds.toString().padStart(2,"0");
+        }
+        item.countdown = cdString;
+        console.log(cdString);
+      }
+    });
+    let interval = setInterval(()=>this.handleReset(),intervalMS);
+    // add interval to STATE
+    this.setState({
+      data:data,
+      countdown:interval
+    });
+    console.log("countdowns created!", data);
+  }
 
   addTimer = (data:TimerType) => {
     let dataArr = this.state.data;

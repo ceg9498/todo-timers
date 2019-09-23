@@ -7,7 +7,8 @@ export type TimerType = {
   isCompleted: boolean,
   period: string,
   description?:string,
-  category?:string
+  category?:string,
+  countdown?:string
 }
 /*
   period shoud be set to:

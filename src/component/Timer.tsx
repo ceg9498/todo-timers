@@ -50,7 +50,9 @@ export default class Timer extends Component<ITimer,any> {
               }
               {timer.title}
             </h6>
-            {timer.completed.length > 0 ?
+            {timer.countdown !== undefined ?
+              <span className="date">In {timer.countdown}</span>
+            : timer.completed.length > 0 ?
               <span className="date">Last completed: {timer.completed[timer.completed.length-1].toDateString()}</span>
             :
               <span className="date"></span>
