@@ -27,12 +27,11 @@ export function setReset(period:String):Date{
     if(data[0][1] === 'g'){
       useUTC = true;
     }
-    // indexes: 1, 2, 3 are currently unused
     /* 
       0: 'r(g/l)'
-      1: year
-      2: month
-      3: day of month
+      1: year // currently unused
+      2: month // currently unused
+      3: day of month // currently unused
       4: hours
       5: minutes
       6: days of week
@@ -50,10 +49,8 @@ export function setReset(period:String):Date{
         // if current day is the same as the intended reset day, check hours
         if(result.getHours() >= hours){
           // if the current hours are greater/equal to desired hours, then
-          // date should be next week
-          let distance = daysofweek[0] + DAYS_IN_WEEK - result.getDay();
-          distance %= 7;
-          result.setDate(result.getDate() + distance);
+          // date should be next week (just add DAYS_IN_WEEK to current date)
+          result.setDate(result.getDate() + DAYS_IN_WEEK);
         } // otherwise, the date is OK
       } else {
         // current day is not the same as intended day
@@ -104,7 +101,6 @@ export function setReset(period:String):Date{
 
 export function checkResets(targetTime:Date){
   let now = new Date();
-
   // if `now` is MORE than `timer`, reset
   if(now.valueOf() > targetTime.valueOf()){
     return true;
