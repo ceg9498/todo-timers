@@ -12,7 +12,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import { Input } from '@material-ui/core';
+import Input from '@material-ui/core/Input';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default class AddForm extends React.Component<any,any>{
   constructor(props){
@@ -322,9 +323,15 @@ export default class AddForm extends React.Component<any,any>{
                 } label="&nbsp;minutes" />
               </div>
 
-              <FormControlLabel control={
-                <Switch checked={this.state.useGlobalTime} onChange={(e)=>this.handleChange(e,"useGlobalTime")} />
-              } label="Use Global Time" /><br/>
+              <Tooltip 
+                placement="right"
+                title="Recommended for events that happen on a global scale. Disable this option if it is for local events.">
+                <FormControlLabel control={
+                  <Switch checked={this.state.useGlobalTime} onChange={(e)=>this.handleChange(e,"useGlobalTime")} />
+                } label="Ignore changes from Daylight Savings Time" />
+              </Tooltip>
+
+              <br/>
 
               <FormControlLabel control=
                 {this.state.partialDays ?

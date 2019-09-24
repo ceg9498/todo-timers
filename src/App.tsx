@@ -375,7 +375,6 @@ export default class TimerList extends Component<any,any> {
   }
 
   render() {
-    console.log(this.state.options);
     let addTimerSectionID = 2;
     let optionsSectionID = 3;
     if(this.state.categories !== undefined){
