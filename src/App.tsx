@@ -9,6 +9,11 @@ import AddForm from './component/addForm';
 import Options from './component/options';
 import './App.scss';
 
+/* Expansion Panel */
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -67,15 +72,6 @@ export default class TimerList extends Component<any,any> {
     }
   }
 
-  openSnack = (message:string) => {
-    this.setState({
-      snack: {
-        isOpen: true,
-        message: message
-      }
-    });
-  }
-
   setCategories = (data:TimerType[]) => {
     let categories = [];
     data.forEach(item => {
@@ -88,7 +84,7 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       categories: categories
     });
-  }
+  };
 
   handleChange = (id:any) => {
     let data = this.state.data;
@@ -312,6 +308,15 @@ export default class TimerList extends Component<any,any> {
   handleTabChange = (event:any,newValue:number) => {
     this.setState({
       section:newValue
+    });
+  };
+
+  openSnack = (message:string) => {
+    this.setState({
+      snack: {
+        isOpen: true,
+        message: message
+      }
     });
   };
 
