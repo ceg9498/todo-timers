@@ -124,7 +124,6 @@ export default class TimerList extends Component<any,any> {
     });
     // re-create timeout based on the new data
     this.createTimeout(data);
-    this.createCountdown();
   };
 
   delete = (id:any,source?:string) => {
@@ -162,7 +161,6 @@ export default class TimerList extends Component<any,any> {
     if(hasReset > 0){
       addOrUpdateMany(data).then(()=>{
         this.createTimeout(data);
-        this.createCountdown();
         this.setState({
           data: data
         });
@@ -214,7 +212,7 @@ export default class TimerList extends Component<any,any> {
     if(this.state.hideCompleted){
       return;
     };
-    // clear an existing timeout before creating a new one
+    // clear an existing countdown before creating a new one
     if(this.state.coundown !== null){
       clearInterval(this.state.coundown);
     }
@@ -222,7 +220,7 @@ export default class TimerList extends Component<any,any> {
     if(this.state.hideCompleted){
       return;
     };
-    // set default interval to every 10 sec
+    // set interval to every 10 sec
     let intervalMS = 10000;
 
     let interval = setInterval(()=>this.tickCountdown(),intervalMS);
@@ -269,7 +267,6 @@ export default class TimerList extends Component<any,any> {
           cdString += seconds.toString().padStart(2,"0");
         }
         item.countdown = cdString;
-        console.log(cdString);
       }
     });
     this.setState({
@@ -534,6 +531,11 @@ function DisplayDialog(props:IDialog){
             {timer.completed.length > 0 &&
               "Last completion: " +
               timer.completed[timer.completed.length-1].toLocaleString()
+            }
+            <br/>
+            {timer.isCompleted &&
+              "Next reset time: " +
+              timer.resetTime.toLocaleString()
             }
           </DialogContentText>
         </DialogContent>

@@ -61,6 +61,7 @@ function addOrUpdateMany(items:TimerType[]) {
       var store = transaction.objectStore('timerData');
       var objStoreReq;
       items.forEach(item => {
+        delete item.countdown;
         objStoreReq = store.put(item);
         
         objStoreReq.onerror = function(event) {
