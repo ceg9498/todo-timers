@@ -50,7 +50,7 @@ export default class TimerList extends Component<any,any> {
         data:data
       });
       this.createTimeout(data);
-      this.createCountdown(data);
+      this.createCountdown();
       this.setCategories(data);
     }).catch(message => {
       this.openSnack(message);
@@ -124,7 +124,7 @@ export default class TimerList extends Component<any,any> {
     });
     // re-create timeout based on the new data
     this.createTimeout(data);
-    this.createCountdown(data);
+    this.createCountdown();
   };
 
   delete = (id:any,source?:string) => {
@@ -162,7 +162,7 @@ export default class TimerList extends Component<any,any> {
     if(hasReset > 0){
       addOrUpdateMany(data).then(()=>{
         this.createTimeout(data);
-        this.createCountdown(data);
+        this.createCountdown();
         this.setState({
           data: data
         });
@@ -210,19 +210,32 @@ export default class TimerList extends Component<any,any> {
     });
   };
 
-  createCountdown = (data?:TimerType[]) => {
+  createCountdown = () => {
+    if(this.state.hideCompleted){
+      return;
+    };
     // clear an existing timeout before creating a new one
     if(this.state.coundown !== null){
       clearInterval(this.state.coundown);
     }
-    // if no data variable was passed, use state's data
-    if(data === undefined){
-      data = this.state.data;
-    }
+    // if the user has chosen to hide completed, don't create a timer
+    if(this.state.hideCompleted){
+      return;
+    };
     // set default interval to every 10 sec
     let intervalMS = 10000;
 
+    let interval = setInterval(()=>this.tickCountdown(),intervalMS);
+    // add interval to STATE
+    this.setState({
+      countdown:interval
+    });
+    console.log("countdowns created!");
+  }
+
+  tickCountdown = () => {
     let now = new Date();
+    let data = this.state.data;
     data.forEach(item=>{
       if(item.isCompleted){
         // set the data.countdown to be a string
@@ -239,7 +252,7 @@ export default class TimerList extends Component<any,any> {
 
         // create the string next
         let cdString = "";
-        
+
         if(days > 0){
           cdString += days + " days and ";
           if(hours > 0){
@@ -259,13 +272,9 @@ export default class TimerList extends Component<any,any> {
         console.log(cdString);
       }
     });
-    let interval = setInterval(()=>this.handleReset(),intervalMS);
-    // add interval to STATE
     this.setState({
-      data:data,
-      countdown:interval
+      data:data
     });
-    console.log("countdowns created!", data);
   }
 
   addTimer = (data:TimerType) => {
