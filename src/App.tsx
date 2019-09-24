@@ -213,8 +213,8 @@ export default class TimerList extends Component<any,any> {
       return;
     };
     // clear an existing countdown before creating a new one
-    if(this.state.coundown !== null){
-      clearInterval(this.state.coundown);
+    if(this.state.countdown !== null){
+      clearInterval(this.state.countdown);
     }
     // if the user has chosen to hide completed, don't create a timer
     if(this.state.hideCompleted){
@@ -228,7 +228,6 @@ export default class TimerList extends Component<any,any> {
     this.setState({
       countdown:interval
     });
-    console.log("countdowns created!");
   }
 
   tickCountdown = () => {
@@ -358,7 +357,13 @@ export default class TimerList extends Component<any,any> {
         [name]: value,
       }
     });
-    console.log("Options "+name+" has value: "+value)
+    if(name === "hideCompleted"){
+      if(value){
+        clearInterval(this.state.countdown);
+      } else {
+        this.createCountdown();
+      }
+    }
   };
 
   filterList(){
