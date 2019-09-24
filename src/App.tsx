@@ -339,7 +339,7 @@ export default class TimerList extends Component<any,any> {
         id: id
       }
     });
-  }
+  };
 
   closeDialog = (
     event:React.SyntheticEvent|React.MouseEvent,
