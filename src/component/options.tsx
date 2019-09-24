@@ -24,7 +24,7 @@ export default function Options(props:IOptionsProps){
       <br/>
       <FormControlLabel control={
         <Switch 
-        checked={optionsState.viewSlim} 
+          checked={optionsState.viewSlim} 
           onChange={(e)=>setOptions(e,"viewSlim")} />
       } label="Slim Timers" />
     </>
