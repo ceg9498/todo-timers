@@ -357,9 +357,11 @@ export default class TimerList extends Component<any,any> {
       event.target.value;
     this.setState({
       options: {
-        [name]: value
+        ...this.state.options,
+        [name]: value,
       }
     });
+    console.log("Options "+name+" has value: "+value)
   };
 
   filterList(){
@@ -371,6 +373,7 @@ export default class TimerList extends Component<any,any> {
   }
 
   render() {
+    console.log(this.state.options);
     let addTimerSectionID = 2;
     let optionsSectionID = 3;
     if(this.state.categories !== undefined){

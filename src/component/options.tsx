@@ -17,11 +17,15 @@ export default function Options(props:IOptionsProps){
   return (
     <>
       <FormControlLabel control={
-        <Switch checked={optionsState.hideCompleted} onChange={(e)=>setOptions(e,"hideCompleted")} />
+        <Switch 
+          checked={optionsState.hideCompleted} 
+          onChange={(e)=>setOptions(e,"hideCompleted")} />
       } label="Hide Completed" />
       <br/>
       <FormControlLabel control={
-        <Switch checked={optionsState.viewSlim} onChange={(e)=>setOptions(e,"viewSlim")} />
+        <Switch 
+        checked={optionsState.viewSlim} 
+          onChange={(e)=>setOptions(e,"viewSlim")} />
       } label="Slim Timers" />
     </>
   );
