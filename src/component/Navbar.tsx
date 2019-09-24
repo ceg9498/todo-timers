@@ -11,10 +11,6 @@ export default function Navbar(props){
         onChange={props.handleTabChange} 
         role="navigation">
         <Tab label="All Timers" id="a-top" />
-        <Tab label="Required" />
-        {props.categories !== undefined && props.categories.map(category =>
-          <Tab label={category} key={category} />
-        )}
         <Tab label="Add Timer" />
         <Tab label="Options" />
       </Tabs>

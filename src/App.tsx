@@ -13,6 +13,7 @@ import './App.scss';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Icon from '@material-ui/core/Icon';
 
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -380,12 +381,8 @@ export default class TimerList extends Component<any,any> {
   }
 
   render() {
-    let addTimerSectionID = 2;
-    let optionsSectionID = 3;
-    if(this.state.categories !== undefined){
-      optionsSectionID += this.state.categories.length;
-      addTimerSectionID += this.state.categories.length;
-    }
+    let addTimerSectionID = 1;
+    let optionsSectionID = 2;
     return (
       <article id="root">
         <Navbar 
@@ -398,46 +395,41 @@ export default class TimerList extends Component<any,any> {
           role="tabpanel"
           hidden={this.state.section !== 0}
           id="top">
-          <h2>All Timers</h2>
-          <ListTimers 
-            filtered={this.filterList()} 
-            handleChange={this.handleChange}
-            viewSlim={this.state.options.viewSlim}
-            openDialog={this.openDialog}
-            deleteItem={this.delete} />
-        </Typography>
 
-        <Typography
-          component="section"
-          role="tabpanel"
-          hidden={this.state.section !== 1}
-          id="top">
-          <h2>Required</h2>
-          <ListTimers 
-            filtered={this.filterList().filter(item=>(item.required === true))} 
-            handleChange={this.handleChange}
-            viewSlim={this.state.options.viewSlim}
-            openDialog={this.openDialog}
-            deleteItem={this.delete} />
-        </Typography>
+          {/* Required Timers */}
+          <ExpansionPanel defaultExpanded={true}>
+            <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
+              Important Timers
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <ListTimers 
+                filtered={this.filterList().filter(item=>(item.required === true))} 
+                handleChange={this.handleChange}
+                viewSlim={this.state.options.viewSlim}
+                openDialog={this.openDialog}
+                deleteItem={this.delete} />
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         
-        {this.state.categories !== undefined && this.state.categories.map((category,index)=>
-          <Typography
-            key={category}
-            component="section"
-            role="tabpanel"
-            hidden={this.state.section !== 2 + index}
-            id={category+"-panel"}>
-            <h2>{category}</h2>
-            <ListTimers 
-              filtered={this.filterList().filter(item=>(item.category === category))} 
-              handleChange={this.handleChange}
-              viewSlim={this.state.options.viewSlim}
-              openDialog={this.openDialog}
-              deleteItem={this.delete} />
-          </Typography>
-        )}
+          {/* Timers by Category */}
+          {this.state.categories !== undefined && this.state.categories.map((category,index)=>
+            <ExpansionPanel key={category}>
+              <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
+                {category}
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <ListTimers 
+                  filtered={this.filterList().filter(item=>(item.category === category))} 
+                  handleChange={this.handleChange}
+                  viewSlim={this.state.options.viewSlim}
+                  openDialog={this.openDialog}
+                  deleteItem={this.delete} />
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          )}
+        </Typography>
 
+        {/* Tab Panel for Adding a Timer */}
         <Typography
           component="section"
           role="tabpanel"
@@ -446,6 +438,7 @@ export default class TimerList extends Component<any,any> {
           <AddForm addTimer={this.addTimer} />
         </Typography>
         
+        {/* Tab Panel for Options */}
         <Typography
           component="section"
           role="tabpanel"
