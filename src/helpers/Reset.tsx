@@ -44,47 +44,42 @@ export function setReset(period:String):Date{
     });
 
     // this logic block is specifically for Days of Week
-    if(daysofweek.length === 1){
-      if(daysofweek[0] === result.getDay()){
-        // if current day is the same as the intended reset day, check hours
-        if(result.getHours() >= hours){
-          // if the current hours are greater/equal to desired hours, then
-          // date should be next week (just add DAYS_IN_WEEK to current date)
-          result.setDate(result.getDate() + DAYS_IN_WEEK);
-        } // otherwise, the date is OK
+    let index:number;
+    let distance:number;
+
+    // if today is a reset day
+    if(daysofweek.indexOf(result.getDay()) > -1){
+      // get the index of the day of week
+      index = daysofweek.indexOf(result.getDay());
+
+      // if the target hours are later than current hour:
+      if(result.getHours() >= hours) {
+        if(daysofweek.length > 1){
+          // when there's only one day, set the result to the next occurance
+          distance = 7;
+        } else {
+          // set the reset to the next day
+          index++;
+        }
       } else {
-        // current day is not the same as intended day
-        // set the date to today plus the number of days between today and the next DoW
-        let distance = daysofweek[0] + DAYS_IN_WEEK - result.getDay();
-        distance %= 7;
-        result.setDate(result.getDate() + distance);
+        // when the hours haven't passed, it's the same day.
+        distance = 0;
       }
     } else {
-      // multiple days specified
-      //if result's current Day is in daysofweek:
-      if(daysofweek.indexOf(result.getDay()) > -1){
-        // check result's hours based on `hours`:
-        if(result.getHours() >= hours){
-          let index = daysofweek.indexOf(result.getDay()) +1;
-          // use next day of week in daysofweek and set that via distance
-          if(index === daysofweek.length){
-            index = 0;
-          }
-          let distance = daysofweek[index] + DAYS_IN_WEEK - result.getDay();
-          distance %= 7;
-          result.setDate(result.getDate() + distance);
+      // get the next day of week from today, and use it as the index
+      for(let day of daysofweek){
+        if(day > result.getDay()){
+          index = day;
+          break;
         }
-      } else {
-        let index = daysofweek.indexOf(result.getDay()) +1;
-        // use next day of week in daysofweek and set that via distance
-        if(index === daysofweek.length){
-          index = 0;
-        }
-        let distance = daysofweek[index] + DAYS_IN_WEEK - result.getDay();
-        distance %= 7;
-        result.setDate(result.getDate() + distance);
       }
-    } // end Days of Week logic block
+    }
+    // calculate the distance if not set yet
+    if(distance === undefined || distance === null){
+      distance = DAYS_IN_WEEK + daysofweek[index] - result.getDay() % 7;
+    }
+    // calculate & set the date
+    result.setDate(result.getDate() + distance);
 
     if(useUTC){
       result.setUTCHours(hours);
