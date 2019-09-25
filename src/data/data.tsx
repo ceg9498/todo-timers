@@ -92,6 +92,7 @@ function addOrUpdateOne(item:TimerType){
       let db = request.result;
       var transaction = db.transaction('timerData', 'readwrite');
       var store = transaction.objectStore('timerData');
+      delete item.countdown;
       store.put(item);
 
       transaction.oncomplete = (event:any) => {
