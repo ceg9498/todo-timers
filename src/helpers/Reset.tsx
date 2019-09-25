@@ -54,12 +54,15 @@ export function setReset(period:String):Date{
 
       // if the target hours are later than current hour:
       if(result.getHours() >= hours) {
-        if(daysofweek.length > 1){
+        if(daysofweek.length === 1){
           // when there's only one day, set the result to the next occurance
           distance = 7;
         } else {
           // set the reset to the next day
           index++;
+          console.log(daysofweek[index]);
+          distance = (DAYS_IN_WEEK + daysofweek[index] - result.getDay()) % 7;
+          console.log("Distance: ",distance)
         }
       } else {
         // when the hours haven't passed, it's the same day.
@@ -69,14 +72,14 @@ export function setReset(period:String):Date{
       // get the next day of week from today, and use it as the index
       for(let day of daysofweek){
         if(day > result.getDay()){
-          index = day;
+          distance = (DAYS_IN_WEEK + day - result.getDay()) % 7;
           break;
         }
       }
-    }
-    // calculate the distance if not set yet
-    if(distance === undefined || distance === null){
-      distance = DAYS_IN_WEEK + daysofweek[index] - result.getDay() % 7;
+      // for loop will fail to set day if the next occurance has already passed
+      if(distance === undefined){
+        distance = (DAYS_IN_WEEK + daysofweek[0] - result.getDay()) % 7;
+      }
     }
     // calculate & set the date
     result.setDate(result.getDate() + distance);
