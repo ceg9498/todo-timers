@@ -199,7 +199,6 @@ export default class AddForm extends React.Component<any,any>{
       period += this.state.minute + '.';
     }
     period += this.calculateDayOfWeek();
-    console.log(period);
     return period;
   };
 
