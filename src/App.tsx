@@ -106,6 +106,7 @@ export default class TimerList extends Component<any,any> {
         } else {
           // if the checkbox IS NOT checked, remove the latest date & reset date
           item.completed.pop();
+          item.countdown = null;
           item.resetTime = null;
         }
         addOrUpdateOne(item).then((message:string)=>{
