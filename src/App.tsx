@@ -293,7 +293,6 @@ export default class TimerList extends Component<any,any> {
       let categories = this.state.categories;
       if(data.category !== "" && !categories.includes(data.category)){
         this.setCategories(dataArr);
-        section++;
       }
   
       this.setState({
