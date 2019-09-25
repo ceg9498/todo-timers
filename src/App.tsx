@@ -334,10 +334,16 @@ export default class TimerList extends Component<any,any> {
   };
 
   openDialog = (id:any) => {
+    let index:number;
+    this.state.data.forEach((item,i) => {
+      if(item.id === id){
+        index = i;
+      }
+    });
     this.setState({
       dialog: {
         isOpen: true,
-        id: id
+        id: index
       }
     });
   };
