@@ -77,7 +77,7 @@ export default class Timer extends Component<ITimer,any> {
           <div className="titleArea" style={styles.title}> {/* Title Area */}
             <h6>
               {timer.required && 
-                <span className="reqSym">&#x203C;&#xFE0F;</span>
+                <span className="reqSym">&#x203C;&#xFE0F;&nbsp;</span>
               }
               {timer.title}
             </h6>
