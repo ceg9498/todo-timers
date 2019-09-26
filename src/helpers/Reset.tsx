@@ -60,9 +60,7 @@ export function setReset(period:String):Date{
         } else {
           // set the reset to the next day
           index++;
-          console.log(daysofweek[index]);
           distance = (DAYS_IN_WEEK + daysofweek[index] - result.getDay()) % 7;
-          console.log("Distance: ",distance)
         }
       } else {
         // when the hours haven't passed, it's the same day.
