@@ -53,7 +53,14 @@ export function setReset(period:String):Date{
       index = daysofweek.indexOf(result.getDay());
 
       // if the target hours are later than current hour:
-      if(result.getHours() >= hours) {
+      // make sure to check against UTC if the timer is Global
+      let currentHours:number;
+      if(useUTC){
+        currentHours = result.getUTCHours();
+      } else {
+        currentHours = result.getHours()
+      }
+      if(currentHours >= hours) {
         if(daysofweek.length === 1){
           // when there's only one day, set the result to the next occurance
           distance = 7;
