@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import Navbar from './component/Navbar';
-import Timer from './component/Timer';
 import { setReset, checkResets } from './helpers/Reset';
 import { initIDB, addOrUpdateOne, addOrUpdateMany, deleteOne } 
   from './data/data';
 import { TimerType } from './data/schema';
 import AddForm from './component/addForm';
 import Options from './component/options';
+import DisplayDialog from './component/DisplayDialog';
+import DisplaySnack from './component/DisplaySnack';
+import ListTimers from './component/ListTimers';
 import './App.scss';
 
 /* Expansion Panel */
@@ -16,17 +18,8 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Icon from '@material-ui/core/Icon';
 
 import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
 
-/* Imports used for Slim UI's Info Dialog */
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Button from '@material-ui/core/Button';
-
-export default class TimerList extends Component<any,any> {
+export default class App extends Component<any,any> {
   constructor(props){
     super(props);
     this.state = {
@@ -378,19 +371,14 @@ export default class TimerList extends Component<any,any> {
     }
   };
 
-  filterList(){
-    let filtered = this.state.data;
-    if(this.state.options.hideCompleted){
-      filtered = filtered.filter(item => !item.isCompleted);
-    }
-    return filtered;
-  }
-
   render() {
-    let addTimerSectionID = 1;
-    let optionsSectionID = 2;
+    let sectionId = {
+      timers: 0,
+      addTimer: 1,
+      options: 2
+    };
     return (
-      <article id="root">
+      <article id="article">
         <Navbar 
           value={this.state.section} 
           handleTabChange={this.handleTabChange}
@@ -399,7 +387,7 @@ export default class TimerList extends Component<any,any> {
         <Typography
           component="section"
           role="tabpanel"
-          hidden={this.state.section !== 0}
+          hidden={this.state.section !== sectionId.timers}
           id="top">
 
           {/* Required Timers */}
@@ -409,7 +397,8 @@ export default class TimerList extends Component<any,any> {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <ListTimers 
-                filtered={this.filterList().filter(item=>(item.required === true))} 
+                filtered={filterList(this.state.data, this.state.options.hideCompleted)
+                  .filter(item=>(item.required === true))} 
                 handleChange={this.handleChange}
                 viewSlim={this.state.options.viewSlim}
                 openDialog={this.openDialog}
@@ -418,14 +407,15 @@ export default class TimerList extends Component<any,any> {
           </ExpansionPanel>
         
           {/* Timers by Category */}
-          {this.state.categories !== undefined && this.state.categories.map((category,index)=>
+          {this.state.categories !== undefined && this.state.categories.map((category)=>
             <ExpansionPanel key={category}>
               <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
                 {category}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <ListTimers 
-                  filtered={this.filterList().filter(item=>(item.category === category))} 
+                  filtered={filterList(this.state.data, this.state.options.hideCompleted)
+                    .filter(item=>(item.category === category))} 
                   handleChange={this.handleChange}
                   viewSlim={this.state.options.viewSlim}
                   openDialog={this.openDialog}
@@ -439,7 +429,7 @@ export default class TimerList extends Component<any,any> {
         <Typography
           component="section"
           role="tabpanel"
-          hidden={this.state.section !== addTimerSectionID}
+          hidden={this.state.section !== sectionId.addTimer}
           id="addTimer">
           <AddForm addTimer={this.addTimer} />
         </Typography>
@@ -448,7 +438,7 @@ export default class TimerList extends Component<any,any> {
         <Typography
           component="section"
           role="tabpanel"
-          hidden={this.state.section !== optionsSectionID}
+          hidden={this.state.section !== sectionId.options}
           id="options">
           <h2>Options</h2>
           <Options setOptions={this.setOptions} optionsState={this.state.options} />
@@ -469,117 +459,10 @@ export default class TimerList extends Component<any,any> {
   }
 }
 
-interface ITimerList {
-  filtered:Array<TimerType>,
-  viewSlim:boolean,
-  handleChange:Function,
-  deleteItem:Function,
-  openDialog:Function,
-  editItem?:Function
-}
-
-function ListTimers(props:ITimerList){
-  let { filtered, handleChange, deleteItem, viewSlim, openDialog } = props;
-  if(viewSlim){
-    return(
-      <div className="flex">
-        {filtered.map((item) => {
-          return(
-          <div key={item.id}>
-            <Timer data={item} viewSlim={viewSlim} handleChange={handleChange} info={openDialog} />
-          </div>
-        );
-        })}
-      </div>
-    );
-  } else {
-    return(
-      <div className="flex">
-        {filtered.map((item) => {
-          return(
-          <div key={item.id}>
-            <Timer data={item} viewSlim={viewSlim} handleChange={handleChange} delete={deleteItem} />
-          </div>
-        );
-        })}
-      </div>
-    );
+function filterList(data:TimerType[], hideCompleted:boolean){
+  let filtered = data;
+  if(hideCompleted){
+    filtered = filtered.filter(item => !item.isCompleted);
   }
-}
-
-interface IDialog {
-  closeDialog:any,
-  isOpen:boolean,
-  deleteItem:Function,
-  editTimer?:any,
-  timer:TimerType
-}
-
-function DisplayDialog(props:IDialog){
-  if(props.timer === undefined){
-    return(<></>);
-  }
-  let { closeDialog, isOpen, timer, deleteItem } = props;
-  return(
-    <Dialog 
-      onClose={closeDialog}
-      aria-labelledby="dialog-title"
-      open={isOpen}>
-        <DialogTitle id="dialog-title">
-          {timer.title}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {timer.category}
-          </DialogContentText>
-          <DialogContentText>
-            {timer.description}
-          </DialogContentText>
-          <DialogContentText>
-            {timer.completed.length > 0 &&
-              "Last completion: " +
-              timer.completed[timer.completed.length-1].toLocaleString()
-            }
-            <br/>
-            {timer.isCompleted &&
-              "Next reset time: " +
-              timer.resetTime.toLocaleString()
-            }
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>
-            Close
-          </Button>
-          <Button onClick={()=>deleteItem(props.timer.id,"dialog")}>
-            Delete
-          </Button>
-        </DialogActions>
-    </Dialog>
-  );
-}
-
-interface ISnack {
-  isSnackOpen:boolean,
-  message:string,
-  closeSnack:any
-}
-
-function DisplaySnack(props:ISnack){
-  let { isSnackOpen, message, closeSnack } = props;
-  return(
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      open={isSnackOpen}
-      autoHideDuration={6000}
-      onClose={closeSnack}
-      ContentProps={{
-        'aria-describedby': 'message-id'
-      }}
-      message={<span id="message-id">{message}</span>}
-    />
-  );
+  return filtered;
 }

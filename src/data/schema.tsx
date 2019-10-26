@@ -25,3 +25,23 @@ export type TimerType = {
   hours used, as in: 15 UTC for daily/8 UTC for weekly
   # day of week: useful for "do on specific days" such as weekly reset, fashion report, etc.
 */
+export interface ITimerList {
+  filtered:Array<TimerType>,
+  viewSlim:boolean,
+  handleChange:Function,
+  deleteItem:Function,
+  openDialog:Function,
+  editItem?:Function
+}
+export interface IDialog {
+  closeDialog:any,
+  isOpen:boolean,
+  deleteItem:Function,
+  editTimer?:any,
+  timer:TimerType
+}
+export interface ISnack {
+  isSnackOpen:boolean,
+  message:string,
+  closeSnack:any
+}
