@@ -151,6 +151,36 @@ function deleteOne(id:any){
   });
 }
 
+function deleteAll(){
+  return new Promise((resolve,reject)=>{
+    var request = window.indexedDB.open('timers',DB_VER);
+
+    request.onsuccess = (event:any) => {
+      let db = request.result;
+      var transaction = db.transaction('timerData', 'readwrite');
+      let store = transaction.objectStore('timerData');
+      let objStoreReq = store.clear();
+
+      objStoreReq.onsuccess = (event:any) => {
+        let message = "Data has been successfully deleted";
+        resolve(message);
+      };
+
+      objStoreReq.onerror = (event:any) => {
+        reject("Unable to delete data");
+      };
+
+      transaction.onerror = (event:any) => {
+        reject("Unable to delete data");
+      };
+    };
+
+    request.onerror = (event:any) => {
+      reject("Unable to delete data");
+    };
+  });
+}
+
 function cleanseData(data:TimerType[]):TimerType[]{
   data.forEach(item=>{
     // fix date for the reset time
@@ -172,4 +202,4 @@ function cleanseData(data:TimerType[]):TimerType[]{
   return data;
 }
 
-export { initIDB, addOrUpdateMany, addOrUpdateOne, deleteOne };
+export { initIDB, addOrUpdateMany, addOrUpdateOne, deleteOne, deleteAll };

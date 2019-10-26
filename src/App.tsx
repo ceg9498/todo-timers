@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Welcome from './component/Welcome';
 import Navbar from './component/Navbar';
 import { setReset, checkResets } from './helpers/Reset';
 import { initIDB, addOrUpdateOne, addOrUpdateMany, deleteOne } 
@@ -379,6 +380,7 @@ export default class App extends Component<any,any> {
     };
     return (
       <article id="article">
+        <Welcome />
         <Navbar 
           value={this.state.section} 
           handleTabChange={this.handleTabChange}
