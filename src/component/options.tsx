@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { deleteAll } from '../data/data';
 import Cookies from 'js-cookie';
 
-import DisplaySnack from './DisplaySnack';
-
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
@@ -17,7 +15,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 interface IOptionsProps {
   setOptions:Function,
-  optionsState:IOptionsState
+  optionsState:IOptionsState,
+  clearData:Function,
+  openSnack:Function
 }
 
 interface IOptionsState {
@@ -26,10 +26,8 @@ interface IOptionsState {
 }
 
 export default function Options(props:IOptionsProps){
-  let { setOptions, optionsState } = props;
+  let { setOptions, optionsState, openSnack } = props;
   const [isDeleteOpen, setDeleteOpen] = useState(false);
-  const [isSnackOpen, setSnackOpen] = useState(false);
-  const [snackMsg, setSnackMsg] = useState("");
 
   return (
     <>
@@ -48,15 +46,18 @@ export default function Options(props:IOptionsProps){
       <Button onClick={()=>setDeleteOpen(true)}>
         Delete my data
       </Button>
-      <DeleteConf isOpen={isDeleteOpen} close={setDeleteOpen} setSnack={setSnackOpen} snackMsg={setSnackMsg} />
-      <DisplaySnack isSnackOpen={isSnackOpen} closeSnack={setSnackOpen} message={snackMsg} />
+      <DeleteConf 
+        isOpen={isDeleteOpen} 
+        close={setDeleteOpen} 
+        openSnack={openSnack} 
+        clearData={props.clearData} />
     </>
   );
 }
 
 
-function DeleteConf(props:{isOpen:boolean, close:any, setSnack:any, snackMsg:any}){
-  let {isOpen, close, setSnack, snackMsg} = props;
+function DeleteConf(props:{isOpen:boolean, close:any, openSnack:any, clearData:any}){
+  let {isOpen, close, openSnack, clearData} = props;
   
   return(
     <Dialog 
@@ -75,7 +76,7 @@ function DeleteConf(props:{isOpen:boolean, close:any, setSnack:any, snackMsg:any
         <Button onClick={()=>close(false)}>
           Cancel
         </Button>
-        <Button onClick={()=>deleteHandler(close, setSnack, snackMsg)}>
+        <Button onClick={()=>deleteHandler(close, openSnack, clearData)}>
           Yes, delete it
         </Button>
       </DialogActions>
@@ -83,14 +84,14 @@ function DeleteConf(props:{isOpen:boolean, close:any, setSnack:any, snackMsg:any
   );
 }
 
-function deleteHandler(close:any, setSnack:any, snackMsg:any){
+function deleteHandler(close:any, openSnack:any,clearData:any){
   // start by closing the dialog box
   close(false);
   // then call delete all to clear IndexedDB
   deleteAll().then((message)=>{
-    snackMsg(message);
-    setSnack(true);
+    openSnack(message);
   });
   // delete cookies as well
   Cookies.remove('isUser', { path: '' });
+  clearData();
 }

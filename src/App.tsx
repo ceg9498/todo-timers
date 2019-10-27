@@ -49,7 +49,6 @@ export default class App extends Component<any,any> {
 
   componentWillMount(){
     let cookies = Cookies.get();
-    console.log(cookies);
     if(cookies.isUser){
       // user has been here before
       // load their data
@@ -87,6 +86,10 @@ export default class App extends Component<any,any> {
       if(item.category !== ""){
         if(!categories.includes(item.category)){
           categories.push(item.category);
+        }
+      } else {
+        if(!categories.includes("No Category")){
+          categories.push("No Category");
         }
       }
     });
@@ -153,7 +156,31 @@ export default class App extends Component<any,any> {
       this.openSnack(message);
     });
   };
-
+  
+  clearActiveData = () => {
+    // if a timeout exists, clear it
+    if(this.state.timeout !== null){
+      clearTimeout(this.state.timeout);
+    }
+    if(this.state.countdown !== null){
+      clearInterval(this.state.countdown);
+    }
+    // reset the state regarding user data.
+    // not resetting newUser, because I don't want the popup
+    // to suddenly show up. It will appear on next load.
+    this.setState({
+      data:[],
+      nextReset: null,
+      timeout: null,
+      countdown: null,
+      categories: undefined,
+      options: {
+        hideCompleted: false,
+        viewSlim: true,
+      }
+    });
+  };
+  
   handleReset = () => {
     let hasReset = 0;
     let data = this.state.data;
@@ -297,18 +324,14 @@ export default class App extends Component<any,any> {
 
       dataArr.push(data);
   
-      let section = this.state.section;
-      let categories = this.state.categories;
-      if(data.category !== "" && !categories.includes(data.category)){
-        this.setCategories(dataArr);
-      }
+      this.setCategories(dataArr);
+
       this.setState({
-        data: dataArr,
-        displayAddForm: false,
-        section: section
+        data: dataArr
       });
     }).catch((message)=>{
-      this.openSnack(message);
+      //this.openSnack(message);
+      console.log(message);
     });
   };
 
@@ -457,7 +480,11 @@ export default class App extends Component<any,any> {
           hidden={this.state.section !== sectionId.options}
           id="options">
           <h2>Options</h2>
-          <Options setOptions={this.setOptions} optionsState={this.state.options} />
+          <Options 
+            setOptions={this.setOptions} 
+            optionsState={this.state.options} 
+            clearData={this.clearActiveData}
+            openSnack={this.openSnack} />
         </Typography>
 
         <DisplayDialog
