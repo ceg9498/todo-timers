@@ -67,7 +67,8 @@ export default class App extends Component<any,any> {
     } else {
       // otherwise, load the welcome popup
       this.setState({
-        newUser: true
+        newUser: true,
+        loaded: true
       })
     }
   }
