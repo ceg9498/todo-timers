@@ -43,7 +43,8 @@ export default class App extends Component<any,any> {
         isOpen:false,
         id:null
       },
-      newUser: false
+      newUser: false,
+      loaded: false
     };
   }
 
@@ -54,7 +55,8 @@ export default class App extends Component<any,any> {
       // load their data
       initIDB.then((data:TimerType[])=>{
         this.setState({
-          data:data
+          data:data,
+          loaded: true
         });
         this.createTimeout(data);
         this.createCountdown();
@@ -429,21 +431,30 @@ export default class App extends Component<any,any> {
           hidden={this.state.section !== sectionId.timers}
           id="top">
 
+          {!this.state.loaded &&
+            <LoadingDataDisplay />
+          }
+          {this.state.loaded && this.state.data.length === 0 &&
+            <EmptyListDisplay />
+          }
+
           {/* Required Timers */}
-          <ExpansionPanel defaultExpanded={true}>
-            <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
-              Important Timers
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <ListTimers 
-                filtered={filterList(this.state.data, this.state.options.hideCompleted)
-                  .filter(item=>(item.required === true))} 
-                handleChange={this.handleChange}
-                viewSlim={this.state.options.viewSlim}
-                openDialog={this.openDialog}
-                deleteItem={this.delete} />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          {this.state.data.filter(item=>(item.required === true)).length > 0 &&
+            <ExpansionPanel defaultExpanded={true}>
+              <ExpansionPanelSummary expandIcon={<Icon>expand_more</Icon>}>
+                Important Timers
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <ListTimers 
+                  filtered={filterList(this.state.data, this.state.options.hideCompleted)
+                    .filter(item=>(item.required === true))} 
+                  handleChange={this.handleChange}
+                  viewSlim={this.state.options.viewSlim}
+                  openDialog={this.openDialog}
+                  deleteItem={this.delete} />
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          }
         
           {/* Timers by Category */}
           {this.state.categories !== undefined && this.state.categories.map((category)=>
@@ -509,3 +520,15 @@ function filterList(data:TimerType[], hideCompleted:boolean){
   }
   return filtered;
 }
+
+function EmptyListDisplay(){
+  return (
+    <p>No timers yet! Create one by seleting "ADD TIMER" in the navigation bar.</p>
+  );
+};
+
+function LoadingDataDisplay(){
+  return (
+    <span>Loading...</span>
+  );
+};
