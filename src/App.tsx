@@ -302,11 +302,9 @@ export default class App extends Component<any,any> {
       if(data.category !== "" && !categories.includes(data.category)){
         this.setCategories(dataArr);
       }
-  
       this.setState({
         data: dataArr,
         displayAddForm: false,
-        categories: categories,
         section: section
       });
     }).catch((message)=>{
