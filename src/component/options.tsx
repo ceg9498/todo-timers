@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import { deleteAll } from '../data/data';
+import Cookies from 'js-cookie';
+
 import DisplaySnack from './DisplaySnack';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -89,4 +91,6 @@ function deleteHandler(close:any, setSnack:any, snackMsg:any){
     snackMsg(message);
     setSnack(true);
   });
+  // delete cookies as well
+  Cookies.remove('isUser', { path: '' });
 }

@@ -12,6 +12,8 @@ import DisplaySnack from './component/DisplaySnack';
 import ListTimers from './component/ListTimers';
 import './App.scss';
 
+import Cookies from 'js-cookie';
+
 /* Expansion Panel */
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -40,21 +42,33 @@ export default class App extends Component<any,any> {
       dialog: {
         isOpen:false,
         id:null
-      }
+      },
+      newUser: false
     };
   }
 
   componentWillMount(){
-    initIDB.then((data:TimerType[])=>{
-      this.setState({
-        data:data
+    let cookies = Cookies.get();
+    console.log(cookies);
+    if(cookies.isUser){
+      // user has been here before
+      // load their data
+      initIDB.then((data:TimerType[])=>{
+        this.setState({
+          data:data
+        });
+        this.createTimeout(data);
+        this.createCountdown();
+        this.setCategories(data);
+      }).catch(message => {
+        this.openSnack(message);
       });
-      this.createTimeout(data);
-      this.createCountdown();
-      this.setCategories(data);
-    }).catch(message => {
-      this.openSnack(message);
-    });
+    } else {
+      // otherwise, load the welcome popup
+      this.setState({
+        newUser: true
+      })
+    }
   }
 
   componentWillUnmount(){
@@ -380,7 +394,9 @@ export default class App extends Component<any,any> {
     };
     return (
       <article id="article">
-        <Welcome />
+        {this.state.newUser &&
+          <Welcome />
+        }
         <Navbar 
           value={this.state.section} 
           handleTabChange={this.handleTabChange}

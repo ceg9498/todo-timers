@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+
+import Cookies from 'js-cookie';
+
 /* MaterialUI's Dialog Compoents */
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -35,12 +38,17 @@ export default function Welcome(){
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>setOpen(false)}>
-            I Understand
+          <Button onClick={()=>confirm(setOpen)}>
+            I understand
           </Button>
         </DialogActions>
     </Dialog>
   );
+}
+
+function confirm(close:any){
+  close(false);
+  Cookies.set('isUser', 'true', { path: '', expires: 7 });
 }
 
 const welcomeText = {
