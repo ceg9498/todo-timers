@@ -234,7 +234,7 @@ export default class App extends Component<any,any> {
     this.setState({
       countdown:interval
     });
-  }
+  };
 
   tickCountdown = () => {
     let now = new Date();
@@ -277,7 +277,7 @@ export default class App extends Component<any,any> {
     this.setState({
       data:data
     });
-  }
+  };
 
   addTimer = (data:TimerType) => {
     let dataArr = this.state.data;
