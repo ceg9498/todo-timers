@@ -104,11 +104,13 @@ export default class Timer extends Component<ITimer,any> {
             </IconButton>
           :
             <>
+            {false && 
               <IconButton 
                 aria-label={"Edit "+timer.title}
                 onClick={()=>console.log("Edit Clicked")}>
                 <Icon className="edit">edit</Icon>
               </IconButton>
+            }
               <IconButton 
                 aria-label={"Delete "+timer.title}
                 onClick={()=>this.props.delete(timer.id,"timerCard")}>
