@@ -52,6 +52,8 @@ export default class App extends Component<any,any> {
     let cookies = Cookies.get();
     if(cookies.isUser){
       // user has been here before
+      // refresh the cookie
+      Cookies.set('isUser', 'true', { path: '', expires: 7 });
       // load their data
       initIDB.then((data:TimerType[])=>{
         this.setState({
