@@ -48,7 +48,10 @@ export default class App extends Component<any,any> {
     };
   }
 
-  componentWillMount(){
+  componentDidMount(){
+    this.setup();
+  }
+  setup(){
     let cookies = Cookies.get();
     if(cookies.isUser){
       // user has been here before
